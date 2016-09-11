@@ -1,0 +1,16 @@
+1473561737
+s:280:"
+
+<div class="panel panel-default student-dynamic">
+
+  <div class="panel-heading">
+    <h3 class="panel-title"><i class="es-icon es-icon-recentactors"></i>学员动态</h3>
+  </div>
+
+  <div class="panel-body">
+       <div class="empty">还没有动态</div>
+      </div>
+
+</div>
+
+";
