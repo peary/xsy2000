@@ -561,23 +561,22 @@ a:hover {
   position: absolute;
   top: 40px;
   left: 0;
-  padding: 20px;
   width: 140px;
   background-color: #6f7372;
   border-radius: 0;
 }
 .one-nav .menu-sec .navbar-nav > li .dropdown-menu li {
   float: none;
-  display: inline-block;
-  margin: 0 10px 10px 0;
+  display: block;
+  margin: 0 0 10px 0;
 }
 .one-nav .menu-sec .navbar-nav > li .dropdown-menu li a {
   padding: 5px 10px;
   color: #fff;
 }
 .one-nav .menu-sec .navbar-nav > li .dropdown-menu li a:hover {
-  color: #1edd8e;
-  background-color: #575959;
+  color: #fff;
+  background-color: #1a1a1a;
 }
 .one-nav .menu-btn {
   display: none;
@@ -2192,7 +2191,7 @@ a.list-group-item.active:focus {
 .one-nav .menu-sec .navbar-nav > .active > a:hover,
 .one-nav .container-gap .nav .dropdown-menu > li > a:hover,
 .one-nav .container-gap .nav .dropdown-menu > li > a:focus {
-  background-color: #ea3732;
+  background-color: #1a1a1a;
 }
 .one-nav .menu-sec,
 .one-nav .navbar-form .btn,
@@ -2200,7 +2199,6 @@ a.list-group-item.active:focus {
 .one-nav .container-gap .nav .dropdown-menu > li > a {
   background-color: #333333;
 }
-.one-nav .menu-sec .navbar-nav > li .dropdown-menu li a:hover,
 .one-nav .container-gap .navbar-nav > li > a:focus,
 .one-nav .container-gap .navbar-nav > li > a:hover,
 .one-nav .container-gap .navbar-nav > li > a:hover .iconfont {
@@ -2210,11 +2208,11 @@ a.list-group-item.active:focus {
   border-bottom-color: #333333;
 }
 .one-nav .container-gap .nav .dropdown-menu:before {
-  border-bottom-color: #ea3732;
+  border-bottom-color: #1a1a1a;
 }
 .one-nav .navbar-brand-logo,
 .one-nav .navbar-brand-logo:hover {
-  color: #ea3732;
+  color: #1a1a1a;
 }
 .one-nav .has-sub .sub-menu a:hover {
   color: #333333;
