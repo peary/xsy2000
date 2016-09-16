@@ -1,0 +1,31 @@
+<div class="login-box-main">
+	{{ web_macro.user_photo(app.user, '') }}
+	<h4>您好，{{ app.user.nickname }}</h4>
+	<a href="{{ path('logout') }}">[安全退出]</a>
+	<ul>
+        <li>
+          <a href="{{ path('my_courses_learning') }}">
+           <span class="iconfont icon-book"></span>
+            <p>课程</p>
+          </a>
+        </li>
+        <li>
+          <a href="{{ path('my_quiz') }}">
+            <span class="iconfont icon-text"></span>
+            <p>考试</p>
+          </a>
+        </li>
+        <li>
+          <a href="{{ path('my_notebooks') }}">
+            <span class="iconfont icon-shu3"></span>
+            <p>笔记</p>
+          </a>
+        </li>
+      	<li class="border-none">
+          <a href="{{ path('my_questions') }}">
+         	<span class="iconfont icon-wenda"></span>
+          	<p>问答</p>
+          </a>
+        </li>
+	</ul>
+</div>

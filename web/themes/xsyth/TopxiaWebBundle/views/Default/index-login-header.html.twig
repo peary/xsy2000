@@ -1,0 +1,41 @@
+<ul class="nav navbar-nav navbar-right">
+    <li class="dropdown">
+      <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+        {{ web_macro.user_photo(app.user, 'img-circle') }}
+        <p>我</p>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a href="{{ path('user_show', {id:app.user.id}) }}"><i class="glyphicon glyphicon-home"></i> 我的主页</a></li>
+        <li><a href="{{ path('settings') }}"><i class="glyphicon glyphicon-cog"></i> 个人设置</a></li>
+        <li><a href="{{ path('my') }}"><i class="glyphicon glyphicon-book"></i> {% if 'ROLE_TEACHER' in app.user.roles %}我的教学{% else %}我的学习{% endif %} </a></li>
+        {% if is_granted('ROLE_BACKEND') %}
+          <li><a href="{{ path('admin') }}"><i class="glyphicon glyphicon-dashboard"></i> 管理后台</a></li>
+        {% endif %}
+        <li><a href="{{ path('logout') }}"><i class="glyphicon glyphicon-off"></i> 退出</a></li>
+      </ul>
+    </li>
+    
+    <li>
+       <a href="{% if setting('coin.coin_enabled') %}{{path('my_coin')}}{% else %}{{path('my_bill')}}{% endif %}">
+          <span class="iconfont icon-qianbao"></span><p>账户</p>
+       </a>
+    </li>
+
+    <li><a href="{{ path('my') }}"> <span class="iconfont icon-iconbook"></span><p>课程</p></a></li>
+    
+    <li>
+		<a href="{{ path('message') }}" class="badge-container message-badge-container">
+	        <span class="iconfont  icon-email"></span>
+	        <p>私信</p>
+	        {% if app.user.newMessageNum > 0 %}<i class="badge">{{ app.user.newMessageNum }}</i>{% endif %}
+        </a>
+    </li>
+
+    <li>
+      <a href="{{ path('notification') }}" class="badge-container notification-badge-container">
+        <span class="iconfont icon-wushenglaba"></span>
+        <p>通知</p>
+        {% if app.user.newNotificationNum > 0 %}<i class="badge">{{ app.user.newNotificationNum }}</i>{% endif %}
+      </a>
+    </li>
+</ul>

@@ -1,0 +1,64 @@
+<div class="navbar site-navbar one-nav" id="site-navbar" data-counter-url="/user_remind_counter">
+  <div class="container">
+    <div class="container-gap">
+      <div class="navbar-header clearfix">
+        
+        <!-- btn-->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="iconfont  icon-nanrentouxiang"></span>
+        </button>
+    
+        <!-- btn-->
+        <div class="menu-btn">
+          <span class="iconfont icon-menu"></span>
+        </div>
+
+        <!-- logo -->
+        {% if setting('site.logo') %}
+        	<a class="navbar-brand-logo" href="{{ path('homepage') }}"><img src="{{ asset(setting('site.logo')) }}"></a>
+        {% else %}
+	        <a class="navbar-brand" href="{{ path('homepage') }}">{{ setting('site.name', 'EDUSOHO') }}</a>
+	    {% endif %}
+        <form class="navbar-form navbar-left hidden-sm hidden-xs clearfix" role="search" action="search">
+          <div class="form-group">
+            <input type="search" class="form-control" placeholder="请输入感兴趣的课程名" name="q">
+          </div>
+          <button type="submit" class="btn"><span class="iconfont  icon-sousuo1"></span></button>
+        </form>
+      </div>
+
+      <div class="navbar-collapse collapse">
+      	{% if app.user %}
+        	{% include 'TopxiaWebBundle:Default:index-login-header.html.twig' %}
+        {% else %}
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="{{ path('login', {goto:_target_path|default(app.request.server.get('REQUEST_URI'))}) }}"> <span class="iconfont icon-login"></span><p>登录</p></a></li>
+            <li><a href="{{ path('register', {goto:_target_path|default(app.request.server.get('REQUEST_URI'))}) }}"> <span class="iconfont icon-zhuce"></span><p>注册</p></a></li>
+        </ul>
+        {% endif %}
+      </div>
+    </div>
+  </div>  
+  <div class="menu-sec" style="overflow: hidden;">
+    <div class="container">
+      <ul class="nav navbar-nav">
+      	 <li class=""><a href="/" class="">首页 </a></li>
+      	 {{ render(controller('TopxiaWebBundle:Default:topNavigation', {siteNav:siteNav|default(null)})) }}
+         {% if app.user %}
+           <li class="hidden-xs hidden-sm hidden-md"><a href="{{ path('my') }}"> {% if 'ROLE_TEACHER' in app.user.roles %}我的教学{% else %}我的学习{% endif %} </a></li>
+           {% if setting('mobile.enabled') %}
+             <li class="hidden-xs hidden-sm hidden-md">
+               <a href="{{ path('mobile') }}" class="mobile-badge-container">
+                 <span class="glyphicon glyphicon-phone"></span>
+               </a>
+             </li>
+          {% endif %}
+         {% else %}
+          {% if setting('mobile.enabled') %}
+            <li class="hidden-xs hidden-sm"><a href="{{ path('mobile') }}"><span class="glyphicon glyphicon-phone"></span> 手机版</a></li>
+          {% endif %}
+        {% endif %}
+      </ul>
+    </div>
+  </div>     
+</div> 

@@ -1,0 +1,47 @@
+<li class="col-xs-6 col-sm-6 col-md-4 es-course-list">
+    <div>
+	  <div class="course-top">
+	    <a href="{{ path('course_show', {id:course.id}) }}">
+	      {{ lazy_img(filepath(course.middlePicture, 'course.png'), 'img-responsive', '') }}
+	    </a>
+	  </div>
+	  <div class="course-bottom">
+	    <h3>{{ course.title }}</h3>
+	    <p>
+			<span class="course-price-widget">
+	        	{% if setting('course.coursesPrice') == 0 %}
+			        {% include "TopxiaWebBundle:Course:price-widget.html.twig" with {shows: ['price', 'discount']} %}
+			    {% endif %}
+	  		</span>    
+	  	</p>              
+	    <span class="student-num pull-right">
+	    	{{ course.studentNum }}人报名
+	    </span>
+	    <span class="nickname clearfix">
+			{% for teacher in course.teachers %}
+	         {% if loop.index <= 1 %}
+	          {{ web_macro.user_link(teacher, 'text-muted') }}
+	         {% endif %}
+	        {% endfor %}
+		</span>
+	   </div>
+	   <div class="mask">
+	     <a href="{{ path('course_show', {id:course.id}) }}">
+	     	{% for teacher in course.teachers %}
+		        {% if loop.index <= 1 %}
+		          <div class="teacher-info clearfix">
+	        		{{ web_macro.user_photo(teacher, 'img-circle pull-left') }}
+		            <span>{{ teacher.nickname }}</span>
+		            <span></span>
+			      </div>
+			      <p>{{ teacher.profile.about|plain_text(60) }}</p>
+	         	{% endif %}
+	        {% endfor %}
+	        <div class="title">
+	          <span class="iconfont icon-jiantou pull-right"></span>
+	          <h3>{{ course.title }}</h3>
+	        </div>
+	     </a>
+	    </div>
+	</div>        
+</li>
