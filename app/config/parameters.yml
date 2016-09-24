@@ -2,7 +2,7 @@ parameters:
     database_driver: pdo_mysql
     database_host: 139.196.187.114
     database_port: 3306
-    database_name: edusoho_demo
+    database_name: edu_xsy
     database_user: eduxsy
     database_password: eduxsy20002016
     mailer_transport: smtp
@@ -10,5 +10,5 @@ parameters:
     mailer_user: null
     mailer_password: null
     locale: zh_CN
-    secret: cy8hefxjlc00ggk0scc4gw0wsw00ks0
+    secret: 6lpt4tq1bwso8g4g8g840ow4o84k0o4
     user_partner: none

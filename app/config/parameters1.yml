@@ -1,0 +1,14 @@
+parameters:
+    database_driver: pdo_mysql
+    database_host: 127.0.0.1
+    database_port: 3306
+    database_name: edu_xsy
+    database_user: root
+    database_password: ''
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    locale: zh_CN
+    secret: 6lpt4tq1bwso8g4g8g840ow4o84k0o4
+    user_partner: none
