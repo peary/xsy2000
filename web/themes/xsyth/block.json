@@ -17,18 +17,6 @@
                         "alt": "图片１的描述",
                         "href": "#",
                         "target": "_blank"
-                    },
-                    {
-                        "src": "\/themes\/xsyth\/img\/slide-2.jpg",
-                        "alt": "图片２的描述",
-                        "href": "#",
-                        "target": "_self"
-                    },
-                    {
-                        "src": "\/themes\/xsyth\/img\/slide-3.jpg",
-                        "alt": "图片３的描述",
-                        "href": "#",
-                        "target": "_blank"
                     }
                 ]
 
