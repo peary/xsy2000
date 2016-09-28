@@ -127,6 +127,7 @@ class LoginBindController extends BaseController
         $client                 = $this->createOAuthClient($type);
         $oauthUser              = $client->getUserInfo($token);
         $oauthUser['createdIp'] = $request->getClientIp();
+        print_r($oauthUser);
 
         if (empty($oauthUser['id'])) {
             $response = array('success' => false, 'message' => '网络超时，获取用户信息失败，请重试。');
