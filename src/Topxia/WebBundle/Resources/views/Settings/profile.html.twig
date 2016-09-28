@@ -91,7 +91,7 @@
 					<div class="form-group form-forIam-group form-notStudent-group">
 						<label class="col-md-2 control-label">{{'班级'|trans}}</label>
 						<div class="col-md-7 controls">
-							<input type="text" id="profile_grade" name="profile[grade]" class="form-control" value="{{ profile.grade|default('') }}">
+							<input type="text" id="profile_class" name="profile[class]" class="form-control" value="{{ profile.class|default('') }}">
 							<div class="help-block" style="display:none;"></div>
 						</div>
 					</div>
@@ -107,7 +107,7 @@
 					<div class="form-group">
 						<label class="col-md-2 control-label">{{'个人签名'|trans}}</label>
 						<div class="col-md-7 controls">
-							<textarea type="text" rows="4" maxlength="80" id="profile_signature" name="profile[signature]" class="form-control">{{ profile.signature|default('') }}</textarea>
+							<textarea type="text" rows="3" maxlength="80" id="profile_signature" name="profile[signature]" class="form-control">{{ profile.signature|default('') }}</textarea>
 							<div class="help-block" style="display:none;"></div>
 						</div>
 					</div>
@@ -115,15 +115,7 @@
 					<div class="form-group">
 						<label class="col-md-2 control-label">{{'寄送地址'|trans}}</label>
 						<div class="col-md-7 controls">
-							<textarea name="profile[address]" rows="10" id="profile_address" class="form-control" >{{ profile.address|default('') }}</textarea>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<label class="col-md-2 control-label">{{'个人主页'|trans}}</label>
-						<div class="col-md-7 controls">
-							<input type="text" id="profile_site" name="profile[site]" class="form-control" data-widget-cid="widget-4" data-explain="" value="{{ profile.site|default('') }}">
-							<div class="help-block" style="display:none;"></div>
+							<textarea name="profile[address]" rows="2" id="profile_address" class="form-control" >{{ profile.address|default('') }}</textarea>
 						</div>
 					</div>
 
