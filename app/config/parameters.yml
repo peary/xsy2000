@@ -1,6 +1,6 @@
 parameters:
     database_driver: pdo_mysql
-    database_host: 139.196.187.114
+    database_host: 127.0.0.1
     database_port: 3306
     database_name: edu_xsy
     database_user: eduxsy
