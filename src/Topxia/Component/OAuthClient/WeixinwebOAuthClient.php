@@ -4,7 +4,8 @@ namespace Topxia\Component\OAuthClient;
 class WeixinwebOAuthClient extends AbstractOAuthClient
 {
     const USERINFO_URL    = 'https://api.weixin.qq.com/sns/userinfo';
-    const AUTHORIZE_URL   = 'https://open.weixin.qq.com/connect/qrconnect?';
+    #const AUTHORIZE_URL   = 'https://open.weixin.qq.com/connect/qrconnect?';
+    const AUTHORIZE_URL   = 'https://open.weixin.qq.com/connect/oauth2/authorize?';
     const OAUTH_TOKEN_URL = 'https://api.weixin.qq.com/sns/oauth2/access_token';
 
     public function getAuthorizeUrl($callbackUrl)
@@ -14,8 +15,11 @@ class WeixinwebOAuthClient extends AbstractOAuthClient
         $params['response_type'] = 'code';
         $params['redirect_uri']  = $callbackUrl;
         $params['scope']         = 'snsapi_login';
+		$url = 'https://open.weixin.qq.com/connect/qrconnect?appid='. $params['appid'] .'&redirect_uri='. urlencode($params['redirect_uri']) .'&response_type=code&scope=snsapi_base#wechat_redirect';
+		#return $url;
         return self::AUTHORIZE_URL.http_build_query($params);
     }
+
 
     public function getAccessToken($code, $callbackUrl)
     {
