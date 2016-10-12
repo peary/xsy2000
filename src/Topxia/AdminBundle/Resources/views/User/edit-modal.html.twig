@@ -34,15 +34,6 @@
     </div>
   </div>
 
-    <div class="row form-group">
-      <div class="col-md-2 control-label"> 
-        <label for="idcard">身份证号</label>
-      </div>
-      <div class="col-md-7 controls">
-        <input type="text" id="idcard" name="idcard" class="form-control" value="{{profile.idcard}}">
-     </div>
-    </div>
-
     {% if (user.verifiedMobile|length) > 0 %}
       <div class="row form-group">
         <div class="col-md-2 control-label"> 
@@ -63,89 +54,6 @@
       </div>
     {% endif %}
 
-    <div class="row form-group">
-        <div class="col-md-2 control-label"> 
-          <label for="company">公司</label>
-        </div>
-        <div class="col-md-7 controls">
-          <input type="text" id="company" name="company" class="form-control" value="{{profile.company}}">
-       </div>
-    </div>
-    
-    <div class="row form-group">
-      <div class="col-md-2 control-label"> 
-        <label for="job">职业</label>
-      </div>
-      <div class="col-md-7 controls">
-        <input type="text" id="job" name="job" class="form-control" value="{{profile.job}}">
-     </div>
-    </div>
-
-    <p></p>
-    <div class="row form-group">
-      <div class="col-md-2 control-label"> 
-        <label for="title">头衔</label>
-      </div>
-      <div class="col-md-7 controls">
-        <input type="text" id="title" name="title" class="form-control" value="{{profile.title}}">
-     </div>
-    </div>
-    <p></p>
-    <div class="row form-group">
-      <div class="col-md-2 control-label"> 
-        <label for="signature">个人签名</label>
-      </div>
-      <div class="col-md-7 controls">
-        <textarea type="text" rows="4" maxlength="80" id="signature" name="signature" class="form-control">{{profile.signature}}</textarea>
-     </div>
-    </div>
-    <p></p>
-    <div class="row form-group">
-      <div class="col-md-2 control-label"> 
-        <label for="about">自我介绍</label>
-      </div>
-      <div class="col-md-7 controls">
-        <textarea id="about" name="about" data-image-upload-url="{{ path('editor_upload', {token:upload_token('default')}) }}">{{profile.about}}</textarea>
-      </div>
-    </div>
-    <p></p>
-    <div class="row form-group">
-      <div class="col-md-2 control-label"> 
-        <label for="site">个人主页</label>
-      </div>
-      <div class="col-md-7 controls">
-        <input type="text" id="site" name="site" class="form-control" value="{{profile.site}}">
-     </div>
-    </div>
-    <p></p>
-  <div class="row form-group">
-      <div class="col-md-2 control-label"> 
-        <label for="weibo">微博</label>
-      </div>
-      <div class="col-md-7 controls">
-        <input type="text" id="weibo" name="weibo" class="form-control" value="{{profile.weibo}}">
-     </div>
-    </div>
-    <p></p>
-    <div class="row form-group">
-      <div class="col-md-2 control-label"> 
-        <label for="qq">QQ</label>
-      </div>
-      <div class="col-md-7 controls">
-        <input type="text" id="qq" name="qq" class="form-control" value="{{profile.qq}}">
-     </div>
-    </div>
-    <p></p>
-    <div class="row form-group">
-      <div class="col-md-2 control-label"> 
-        <label for="weixin">微信</label>
-      </div>
-      <div class="col-md-7 controls">
-        <input type="text" id="weixin" name="weixin" class="form-control" value="{{profile.weixin}}">
-     </div>
-    </div> 
-
-    <input type="hidden" name="_csrf_token" value="{{ csrf_token('site') }}">           
 
 {% if fields %}
           <hr>
