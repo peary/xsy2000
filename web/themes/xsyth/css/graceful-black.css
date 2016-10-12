@@ -2234,7 +2234,7 @@ a.list-group-item.active:focus {
   .one-nav .nav,
   .one-nav .container-gap .navbar-nav > li > a,
   .one-nav .container-gap .navbar-nav > li > a:hover {
-    background-color: #ea3732 !important;
+    background-color: #333333 !important;
   }
   .one-nav .navbar-nav > li > a:hover,
   .one-nav .navbar-nav > li.open > a,
@@ -2287,7 +2287,7 @@ a.list-group-item.active:focus {
 }
 .es-box .actions .btn:hover,
 .es-box .actions .btn:focus {
-  background-color: #ea3732;
+  background-color: #000;
   color: #fff;
 }
 .tag-list a:hover,
@@ -2363,8 +2363,8 @@ a.list-group-item.active:focus {
 .btn-success:hover,
 .btn-success:focus,
 .btn-success:active {
-  background-color: #ea3732;
-  border-color: #ea3732;
+  background-color: #000;
+  border-color: #000;
   color: #fff;
 }
 a.list-group-item.active,
@@ -2387,7 +2387,7 @@ a.list-group-item.active:focus {
 }
 .btn-link:hover,
 .btn-link:focus {
-  color: #ea3732;
+  color: #000;
 }
 .progress-bar {
   background-color: #333333;
