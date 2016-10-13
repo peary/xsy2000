@@ -685,14 +685,14 @@ a:hover {
 @media (max-width: 767px) {
   ::-webkit-scrollbar {
     width: 5px;
-    height: 16px;
+    height: 5px;
     background-color: transparent;
   }
   ::-webkit-scrollbar-track {
     background-color: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background-color: #015138;
+    background-color: #999;
   }
   .one-nav .container {
     width: 100%;
@@ -2202,7 +2202,7 @@ a.list-group-item.active:focus {
 .one-nav .container-gap .navbar-nav > li > a:focus,
 .one-nav .container-gap .navbar-nav > li > a:hover,
 .one-nav .container-gap .navbar-nav > li > a:hover .iconfont {
-  color: #333333 !important;
+  color: #fff !important;
 }
 .one-nav {
   border-bottom-color: #333333;
