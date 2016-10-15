@@ -2199,11 +2199,12 @@ a.list-group-item.active:focus {
 .one-nav .container-gap .nav .dropdown-menu > li > a {
   background-color: #333333;
 }
+/**
 .one-nav .container-gap .navbar-nav > li > a:focus,
 .one-nav .container-gap .navbar-nav > li > a:hover,
 .one-nav .container-gap .navbar-nav > li > a:hover .iconfont {
   color: #fff !important;
-}
+}**/
 .one-nav {
   border-bottom-color: #333333;
 }
