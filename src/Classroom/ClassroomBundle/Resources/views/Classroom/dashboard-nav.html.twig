@@ -21,8 +21,9 @@
     <li role="presentation" class="{% if nav == 'thread' %}active{% endif %}"><a href="{{ path('classroom_threads', {classroomId:classroom.id}) }}">讨论 <small class="text-muted">{% if classroom.threadNum != 0 %}( {{classroom.threadNum}} ){% endif %}</small></a></li>
 {#
     <li role="presentation" class="{% if nav == 'note' %}active{% endif %}"><a  href="{{ path('classroom_course_notes_list', {classroomId:classroom.id}) }}">笔记 <small class="text-muted">{% if classroom.noteNum != 0 %}( {{ classroom.noteNum }} ){% endif %}</small></a></li>
+ #}
   {% endif %}
-
+{#
     <li role="presentation" class="{% if nav == 'teachers' %}active{% endif %}"><a href="{{ path('classroom_teachers', {classroomId:classroom.id}) }}">师资</a></li>
 #}
   </ul>
