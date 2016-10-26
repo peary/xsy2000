@@ -57,19 +57,16 @@ class WeixinmobOAuthClient extends AbstractOAuthClient
     private function convertUserInfo($infos)
     {
         $userInfo           = array();
-		#print_r($infos);
-		if ( array_key_exists('openid', $infos))
-        {
-			$userInfo['id']     = $infos['openid'];
-			$userInfo['name']   = $infos['nickname'];
-			$userInfo['avatar'] = $infos['headimgurl'];
+        $userInfo['id']     = $infos['unionid'];
+        $userInfo['name']   = $infos['nickname'];
+        $userInfo['avatar'] = $infos['headimgurl'];
 
-			if ($infos['sex'] == 1) {
-				$userInfo['gender'] = 'male';
-			} elseif ($infos['sex'] == 2) {
-				$userInfo['gender'] = 'female';
-			}
-		}
+        if ($infos['sex'] == 1) {
+            $userInfo['gender'] = 'male';
+        } elseif ($infos['sex'] == 2) {
+            $userInfo['gender'] = 'female';
+        }
+
         return $userInfo;
     }
 }

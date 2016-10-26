@@ -60,7 +60,7 @@
                   <a href="{{ path('course_show', {id:course.id}) }}" class="text-success" target="_blank">{{ course.title }}</a>
                   {% if lesson %}
                     <span class="text-muted mhs">&raquo;</span>
-                    <a class="text-success"  href="{{ path('course_learn', {id:lesson.courseId}) }}#lesson/{{lesson.id}}" target="_blank">课时{{lesson.number}}：{{ lesson.title }}</a>
+                    <a class="text-success"  href="{{ path('course_learn', {id:lesson.courseId}) }}#lesson/{{lesson.id}}" target="_blank">课件{{lesson.number}}：{{ lesson.title }}</a>
 
                   {% endif %}
                 {% endif %}
