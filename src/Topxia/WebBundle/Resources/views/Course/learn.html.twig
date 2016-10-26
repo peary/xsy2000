@@ -36,8 +36,8 @@
         <a class="btn btn-primary  nav-btn back-course-btn" href="{{ path('course_show', {id:course.id}) }}"><span class="glyphicon glyphicon-chevron-left" ></span> {{'返回课程'|trans}}</a>
       {% endif %}
 
-       <a class="btn btn-primary  nav-btn prev-lesson-btn" href="javascript:" data-role="prev-lesson" data-placement="right" title="{{'上一课时'|trans}}"><span class="glyphicon glyphicon-chevron-up" title="{{'上一课时'|trans}}"></span></a>
-       <a class="btn btn-primary nav-btn next-lesson-btn" href="javascript:" data-role="next-lesson" data-placement="right" title="{{'下一课时'|trans}}"><span class="glyphicon glyphicon-chevron-down"></span></a>
+       <a class="btn btn-primary  nav-btn prev-lesson-btn" href="javascript:" data-role="prev-lesson" data-placement="right" title="{{'上一课件'|trans}}"><span class="glyphicon glyphicon-chevron-up" title="{{'上一课件'|trans}}"></span></a>
+       <a class="btn btn-primary nav-btn next-lesson-btn" href="javascript:" data-role="next-lesson" data-placement="right" title="{{'下一课件'|trans}}"><span class="glyphicon glyphicon-chevron-down"></span></a>
 
       <div class="dashboard-header">
         <div class="pull-left title-group">
@@ -55,7 +55,7 @@
               第<span data-role="unit-number"></span>{% if setting('default.part_name') %}{{setting('default.part_name')|default('节')}}{% else %}节{% endif %}</span>
             {% endif %}
           <span class="divider">&raquo;</span>
-          <span class="item-label">{% if  setting('course.custom_chapter_enabled')|default(true)%}{{'课时'|trans}}<span data-role="lesson-number"></span>{% endif %}</span>
+          <span class="item-label">{% if  setting('course.custom_chapter_enabled')|default(true)%}{{'课件'|trans}}<span data-role="lesson-number"></span>{% endif %}</span>
           <span class="item-title" data-role="lesson-title">{{'正在加载'|trans}}...</span>
         </div>
       </div>
@@ -91,7 +91,7 @@
           <div class="lesson-content-text-body"></div>
         </div>
         <div class="lesson-content lesson-content-text" id="lesson-unpublished-content" data-role="lesson-content" style="display:none;">
-          <div class="lesson-content-text-body">{{'当前课时正在编辑中，暂时无法观看。'|trans}}</div>
+          <div class="lesson-content-text-body">{{'当前课件正在编辑中，暂时无法观看。'|trans}}</div>
         </div>
 
         <div class="lesson-content lesson-content-text" id="lesson-testpaper-content" data-role="lesson-content" style="display:none;">
@@ -162,10 +162,10 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">{{'媒体课时学习提示'|trans}}</h4>
+          <h4 class="modal-title">{{'媒体课件学习提示'|trans}}</h4>
         </div>
         <div class="modal-body">
-          <p class="text-success">{{'此课时设置了必须完整播放完整个课时才能学完'|trans}}～～</p>
+          <p class="text-success">{{'此课件设置了必须完整播放完整个课件才能学完'|trans}}～～</p>
         </div>
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -179,7 +179,7 @@
           <h4 class="modal-title">{{'作业未完成提示'|trans}}</h4>
         </div>
         <div class="modal-body">
-          <p class="text-success">{{'此课时设置了必须做完本课时作业并提交后才能学完'|trans}}～～</p>
+          <p class="text-success">{{'此课件设置了必须做完本课件作业并提交后才能学完'|trans}}～～</p>
         </div>
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
