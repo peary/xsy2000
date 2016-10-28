@@ -156,6 +156,30 @@ class UserController extends BaseController
 
         return $this->render($this->getCreateUserModal());
     }
+    
+    public function createMultiAction(Request $request)
+    {
+    	if ($request->getMethod() == 'POST') {
+    		$formData         = $request->request->all();
+    		$formData['type'] = 'import';
+    		$registration     = $this->getRegisterData($formData, $request->getClientIp());
+    		$user             = $this->getAuthService()->register($registration);
+    
+    		$this->get('session')->set('registed_email', $user['email']);
+    
+    		if (isset($formData['roles'])) {
+    			$roles[] = 'ROLE_TEACHER';
+    			array_push($roles, 'ROLE_USER');
+    			$this->getUserService()->changeUserRoles($user['id'], $roles);
+    		}
+    
+    		$this->getLogService()->info('user', 'add', "管理员添加新用户 {$user['nickname']} ({$user['id']})");
+    
+    		return $this->redirect($this->generateUrl('admin_user'));
+    	}
+    
+    	return $this->render('TopxiaAdminBundle:User:create-modal.html.twig');
+    }
 
     protected function getRegisterData($formData, $clientIp)
     {
