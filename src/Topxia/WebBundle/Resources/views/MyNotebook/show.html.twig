@@ -26,7 +26,7 @@
           <div class="notebook-note notebook-note-collapsed">
             <div class="notebook-note-heading">
               {% if lesson %}
-                <a href="{{ path('course_learn', {id:note.courseId}) }}#lesson/{{ lesson.id }}" target="_blank">课时{{ lesson.number }}：{{ lesson.title }}</a>
+                <a href="{{ path('course_learn', {id:note.courseId}) }}#lesson/{{ lesson.id }}" target="_blank">课件{{ lesson.number }}：{{ lesson.title }}</a>
               {% else %}
                 <span>{{'该课时已删除'|trans}}</span>
               {% endif %}

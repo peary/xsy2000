@@ -226,6 +226,11 @@ admin_user_create:
     parent: admin_user_manage
     mode: modal
     group: 2
+admin_user_create_multi:
+    name: 批量添加新用户
+    parent: admin_user_manage
+    mode: modal
+    group: 2
 admin_user_manage:
     name: 用户管理
     parent: admin_user_show

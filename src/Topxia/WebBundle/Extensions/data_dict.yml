@@ -314,8 +314,8 @@ classroomService:
 classroomRoles:
     auditor: 旁听生
     student: 学生
-    headTeacher: 班主任
-    teacher: 老师
+    headTeacher: 指导老师
+    teacher: 指导老师
     assistant: 助教
     assistantStudent: 助教
 

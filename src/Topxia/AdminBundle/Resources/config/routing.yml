@@ -209,6 +209,10 @@ admin_user_create:
     pattern:  /user/create
     defaults: { _controller: TopxiaAdminBundle:User:create }
 
+admin_user_create_multi:
+    pattern:  /user/create_multi
+    defaults: { _controller: TopxiaAdminBundle:User:createMulti }
+
 admin_user_create_email_check:
     pattern:  /user/create/email/check
     defaults: { _controller: TopxiaAdminBundle:User:emailCheck }
