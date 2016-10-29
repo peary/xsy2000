@@ -5,64 +5,37 @@
 {% block title %}批量添加新用户{% endblock %}
 {% block body %}
 
-<form id="user-create-form" class="form-horizontal" method="post" action="{{ path('admin_user_create')}}">
-
-  <div class="row form-group">
-    <div class="col-md-2 control-label">
-      <label for="email">邮箱地址</label>
-    </div>
-    <div class="col-md-7 controls">
-      <input type="text" id="email" data-url="{{path('admin_user_create_email_check')}}" name="email" class="form-control" >
-    </div>
-  </div>
-
-  <div class="row form-group">
-    <div class="col-md-2 control-label">
-      <label for="nickname">用户名</label>
-    </div>
-    <div class="col-md-7 controls">
-      <input type="text" id="nickname" name="nickname" data-url="{{path('admin_user_create_nickname_check')}}" class="form-control" >
-    </div>
-  </div>
-
-   <div class="row form-group">
-    <div class="col-md-2 control-label">
-      <label for="password">密码</label>
-    </div>
-      <div class="col-md-7 controls">
-        <input type="password" id="password" name="password" class="form-control">
-      <p class="help-block">5-20位英文、数字、符号，区分大小写</p>
-    </div>
-  </div>
-
+<form id="user-create-multi-form" class="form-horizontal" method="post" enctype="multipart/form-data" action="{{ path('admin_user_create_multi')}}">
     <div class="row form-group">
-      <div class="col-md-2 control-label">
-      <label for="confirmPassword">确认密码</label>
+        <div class="alert">
+            csv导入批量添加用户，请先下载此模板，填好数据，模板下载地址：<a href="http://image.xymens.com/activity/xy161029/add_user.csv" target="_blank" class="btn btn-info">下载</a>
+        </div>
     </div>
-      <div class="col-md-7 controls">
-        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control">
-        <p class="help-block">再输入一次密码</p>
-      </div>
+    <div class="row form-group">
+        <div class="col-md-2 control-label">
+            <label for="confirmPassword">csv文件</label>
+        </div>
+        <div class="col-md-7 controls">
+            <input type="file" id="uploadcsv" name="uploadcsv" class="form-control" />
+        </div>
     </div>
 
-    {% include 'OrgBundle:Org:org-tree-select.html.twig' with {colmd:7,modal: 'modal'} %}
-
-  <div class="row form-group">
-    <div class="col-md-2 control-label">
-      <label for="roles">用户权限</label>
-    </div>
-    <div class="col-md-7 controls">
-      <input type="checkbox" value="ROLE_TEACHER" name="roles[]"> 教师  
-    </div>
-  </div>
-
-  <input type="hidden" name="_csrf_token" value="{{ csrf_token('site') }}">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('site') }}">
 
 </form>
 {% endblock %}
 
 {% block footer %}
-  <button id="user-create-btn" data-submiting-text="正在提交" type="submit" class="btn btn-primary pull-right" data-toggle="form-submit" data-target="#user-create-form">提交</button>
+  <!--button data-submiting-text="正在提交" type="submit" class="btn btn-primary pull-right" data-toggle="form-submit" data-target="#user-create-multi-form">提交</button-->
+  <button data-submiting-text="正在提交" type="submit" class="btn btn-primary pull-right" data-target="#user-create-multi-form">提交</button>
   <button type="button" class="btn btn-link pull-right" data-dismiss="modal">取消</button>
-  <script>app.load('user/create-modal')</script>
+  <script type="text/javascript">
+       $('*[data-target="#user-create-multi-form"]').on('click', function(){
+           var csv = $('#uploadcsv').val();
+           if(csv == ''){
+               alert('请选择批量添加用户的csv文件！');return;
+           }
+           $('#user-create-multi-form').submit();
+       });
+  </script>
 {% endblock %}

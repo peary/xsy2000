@@ -105,6 +105,8 @@ interface UserService
 
     public function updateUserProfile($id, $fields);
 
+    public function insertUserProfile($fields);
+
     public function getUserProfile($id);
 
     public function searchUserProfiles(array $conditions, array $orderBy, $start, $limit);

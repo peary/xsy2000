@@ -648,6 +648,34 @@ class UserServiceImpl extends BaseService implements UserService
         return $user;
     }
 
+    public function insertUserProfile($registration){
+        $profile             = array();
+        $profile['id']       = $registration['id'];
+        $profile['mobile']   = empty($registration['mobile']) ? '' : $registration['mobile'];
+        $profile['idcard']   = empty($registration['idcard']) ? '' : $registration['idcard'];
+        $profile['truename'] = empty($registration['truename']) ? '' : $registration['truename'];
+        $profile['company']  = empty($registration['company']) ? '' : $registration['company'];
+        $profile['job']      = empty($registration['job']) ? '' : $registration['job'];
+        $profile['weixin']   = empty($registration['weixin']) ? '' : $registration['weixin'];
+        $profile['weibo']    = empty($registration['weibo']) ? '' : $registration['weibo'];
+        $profile['qq']       = empty($registration['qq']) ? '' : $registration['qq'];
+        $profile['site']     = empty($registration['site']) ? '' : $registration['site'];
+        $profile['gender']   = empty($registration['gender']) ? 'secret' : $registration['gender'];
+
+        for ($i = 1; $i <= 5; $i++) {
+            $profile['intField'.$i]   = empty($registration['intField'.$i]) ? null : $registration['intField'.$i];
+            $profile['dateField'.$i]  = empty($registration['dateField'.$i]) ? null : $registration['dateField'.$i];
+            $profile['floatField'.$i] = empty($registration['floatField'.$i]) ? null : $registration['floatField'.$i];
+        }
+
+        for ($i = 1; $i <= 10; $i++) {
+            $profile['varcharField'.$i] = empty($registration['varcharField'.$i]) ? "" : $registration['varcharField'.$i];
+            $profile['textField'.$i]    = empty($registration['textField'.$i]) ? "" : $registration['textField'.$i];
+        }
+
+        $this->getProfileDao()->addProfile($profile);
+    }
+
     public function generateNickname($registration, $maxLoop = 100)
     {
         for ($i = 0; $i < $maxLoop; $i++) {

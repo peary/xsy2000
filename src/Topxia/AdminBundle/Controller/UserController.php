@@ -4,6 +4,7 @@ namespace Topxia\AdminBundle\Controller;
 use Topxia\Common\Paginator;
 use Topxia\Common\ArrayToolkit;
 use Topxia\Service\Common\MailFactory;
+use Topxia\Common\PinYinToolkit;
 use Topxia\WebBundle\DataDict\UserRoleDict;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -162,23 +163,113 @@ class UserController extends BaseController
     	if ($request->getMethod() == 'POST') {
     		$formData         = $request->request->all();
     		$formData['type'] = 'import';
-    		$registration     = $this->getRegisterData($formData, $request->getClientIp());
-    		$user             = $this->getAuthService()->register($registration);
-    
-    		$this->get('session')->set('registed_email', $user['email']);
-    
-    		if (isset($formData['roles'])) {
-    			$roles[] = 'ROLE_TEACHER';
-    			array_push($roles, 'ROLE_USER');
-    			$this->getUserService()->changeUserRoles($user['id'], $roles);
-    		}
-    
-    		$this->getLogService()->info('user', 'add', "管理员添加新用户 {$user['nickname']} ({$user['id']})");
-    
+            //检查csv文件
+            if(!isset($_FILES['uploadcsv']) || $_FILES['uploadcsv']['size'] == 0 || strpos($_FILES['uploadcsv']['name'], '.csv') === false){
+                $this->setFlashMessage('danger', '请上传正确的csv文件');
+            }
+
+            //移动文件
+            $newfile = $_SERVER['DOCUMENT_ROOT'].'/files/tmp/'.md5($_FILES["uploadcsv"]["name"]).'.csv';
+            if(move_uploaded_file($_FILES["uploadcsv"]["tmp_name"],$newfile)){
+                $orginals = array();
+
+                $file = fopen($newfile,'r');
+                $i = 0; $flag = true;
+                while ($data = fgetcsv($file)) {
+                    $data = eval('return '.iconv('gbk','utf-8',var_export($data,true)).';');
+                    if(count($data) != 4){
+                        $flag = false;
+                        break;
+                    }
+                    if($i > 0){
+                        $orginals[] = $data;
+                    }
+                    if($i > 100){
+                        $flag = false;
+                        break;
+                    }
+                    $i++;
+                }
+                if($flag == false){
+                    $this->setFlashMessage('danger', 'csv文件格式不对或者超过100条记录');
+                }
+
+                //格式化数据
+                $regs = $this->formatRegisterData($orginals, $request->getClientIp());
+                //print_r($regs);exit;
+                //导入数据
+                foreach($regs as $vo){
+                    $profile = $vo['profile'];
+                    unset($vo['profile']);
+
+                    //注册账号
+                    $user = $this->getAuthService()->register($vo);
+                    //插入用户信息表
+                    if(isset($user['id'])){
+                        //新定义方法
+                        //$profile['id'] = $user['id'];
+                        //$this->getUserService()->insertUserProfile($profile);
+                        //更新用户信息表
+                        $this->getUserService()->updateUserProfile($user['id'],$profile);
+                    }
+                }
+
+                $this->getLogService()->info('user', 'add', "管理员操作批量添加新用户");
+
+                //删除文件
+                unlink($newfile);
+            }
+
     		return $this->redirect($this->generateUrl('admin_user'));
     	}
     
-    	return $this->render('TopxiaAdminBundle:User:create-modal.html.twig');
+    	return $this->render('TopxiaAdminBundle:User:create-multi-modal.html.twig');
+    }
+
+    protected function formatRegisterData($data, $clientIp){
+        //初始化拼音
+        $PinYin = new PinYinToolkit();
+
+        //format data
+        $arrs = array();
+        for($i=0; $i<count($data); $i++){
+            $nickname = $data[$i][0];
+            $password = $PinYin->getAllPY($nickname);
+            $email = $password.'@xsy2000.com';
+
+            $item = array(
+                'email'=>$email,
+                'nickname'=>$nickname,
+                'password'=>$password,
+                'createdIp'=>$clientIp,
+                'type'=>'import',
+                'profile'=>array(
+                    'truename'=>$data[$i][0],
+                    'varcharField1'=>$data[$i][3],
+                    'varcharField2'=>$data[$i][2],
+                    'varcharField3'=>$data[$i][1]
+                )
+            );
+
+            //检查用户是否存在
+            list($result1, $message1) = $this->getAuthService()->checkEmail($email);
+            if($result1 != 'success'){
+                $tmp = rand(1000,9999);
+                $item['email'] = $password.$tmp.'@xsy2000.com';
+                $item['nickname'] = $nickname.$tmp;
+            }
+
+            list($result2, $message2) = $this->getAuthService()->checkUsername($nickname);
+            if($result2 != 'success'){
+                $tmp = rand(1000,9999);
+                $item['email'] = $password.$tmp.'@xsy2000.com';
+                $item['nickname'] = $nickname.$tmp;
+            }
+
+            $arrs[] = $item;
+        }
+
+        return $arrs;
     }
 
     protected function getRegisterData($formData, $clientIp)
