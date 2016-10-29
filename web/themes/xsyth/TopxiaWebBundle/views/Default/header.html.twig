@@ -20,10 +20,17 @@
 	        <a class="navbar-brand" href="{{ path('homepage') }}">{{ setting('site.name', 'EDUSOHO') }}</a>
 	    {% endif %}
         <form class="navbar-form navbar-left hidden-sm hidden-xs clearfix" role="search" action="search">
-          <div class="form-group">
-            <input type="search" class="form-control" placeholder="请输入感兴趣的课程名" name="q">
-          </div>
-          <button type="submit" class="btn"><span class="iconfont  icon-sousuo1"></span></button>
+            <div class="btn-group">
+                <div class="form-group dropdown-toggle" data-toggle="dropdown">
+                  <input type="search" class="form-control" placeholder="请输入感兴趣的课程名" name="q" autocomplete="off">
+                </div>
+                <ul class="dropdown-menu hot-search" style="background-color:#f3f3f3">
+                    <li><a href="javascript:;">成长试读写</a></li>
+                    <li><a href="javascript:;">在线微课</a></li>
+                    <li><a href="javascript:;">操作指南</a></li>
+                </ul>
+                <button type="submit" class="btn"><span class="iconfont icon-sousuo1"></span></button>
+            </div>
         </form>
       </div>
 

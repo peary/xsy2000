@@ -2227,8 +2227,8 @@ a.list-group-item.active:focus {
   .one-nav .navbar-form .btn,
   .one-nav .menu-sec > li,
   .one-nav .navbar-form .btn:hover,
-  .one-nav .menu-sec .navbar-nav > li .dropdown-menu {
-    background-color: #333333;
+  .one-nav .menu-sec .navbar-nav > li .dropdown-menu{
+      background-color: #333333
   }
   .one-nav .menu-btn,
   .one-nav .has-sub .sub-menu,

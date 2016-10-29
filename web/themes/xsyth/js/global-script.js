@@ -118,6 +118,13 @@ define(function(require, exports, module) {
             $(window).scrollTop(0);
         });
 
+        //热搜榜
+        $('.hot-search li').on('click', function(){
+            var txt = $(this).find('a').text();
+            $('.hot-search').prev().find('input[name="q"]').val(txt);
+            $('.hot-search').next().trigger('click');
+        })
+
     };
 
 });
