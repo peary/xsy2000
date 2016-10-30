@@ -3,8 +3,8 @@ namespace Topxia\AdminBundle\Controller;
 
 use Topxia\Common\Paginator;
 use Topxia\Common\ArrayToolkit;
-use Topxia\Service\Common\MailFactory;
 use Topxia\Common\PinYinToolkit;
+use Topxia\Service\Common\MailFactory;
 use Topxia\WebBundle\DataDict\UserRoleDict;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -218,7 +218,7 @@ class UserController extends BaseController
                 unlink($newfile);
 //            }
 
-    		return $this->redirect($this->generateUrl('admin_user'));
+            return $this->redirect($this->generateUrl('admin_user'));
     	}
     
     	return $this->render('TopxiaAdminBundle:User:create-multi-modal.html.twig');

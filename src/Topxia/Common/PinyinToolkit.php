@@ -1,5 +1,7 @@
 <?php
+
 namespace Topxia\Common;
+
 /**
  *    PHP 汉字转拼音
  *    @author fugang
