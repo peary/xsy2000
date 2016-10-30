@@ -193,26 +193,26 @@ class UserController extends BaseController
                 }
                 if($flag == false){
                     $this->setFlashMessage('danger', 'csv文件格式不对或者超过100条记录');
-                }
+                } else {
+                    //格式化数据
+                    $regs = $this->formatRegisterData($orginals, $request->getClientIp());
+                    //print_r($regs);exit;
+                    //导入数据
+                    foreach($regs as $vo){
+                        $profile = $vo['profile'];
+                        unset($vo['profile']);
 
-                //格式化数据
-                $regs = $this->formatRegisterData($orginals, $request->getClientIp());
-                //print_r($regs);exit;
-                //导入数据
-                foreach($regs as $vo){
-                    $profile = $vo['profile'];
-                    unset($vo['profile']);
-
-                    //注册账号
-                    $user = $this->getAuthService()->register($vo);
-                    //插入用户信息表
-                    if(isset($user['id'])){
-                        //更新用户信息表
-                        $this->getUserService()->updateUserProfile($user['id'],$profile);
+                        //注册账号
+                        $user = $this->getAuthService()->register($vo);
+                        //插入用户信息表
+                        if(isset($user['id'])){
+                            //更新用户信息表
+                            $this->getUserService()->updateUserProfile($user['id'],$profile);
+                        }
                     }
-                }
 
-                $this->getLogService()->info('user', 'add', "管理员操作批量添加新用户");
+                    $this->getLogService()->info('user', 'add', "管理员操作批量添加新用户");
+                }
 
                 //删除文件
                 unlink($newfile);
