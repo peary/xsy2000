@@ -3,7 +3,7 @@ namespace Topxia\AdminBundle\Controller;
 
 use Topxia\Common\Paginator;
 use Topxia\Common\ArrayToolkit;
-use Topxia\Common\PinYinToolkit;
+use Topxia\Common\PinyinToolkit;
 use Topxia\Service\Common\MailFactory;
 use Topxia\WebBundle\DataDict\UserRoleDict;
 use Symfony\Component\HttpFoundation\Request;
@@ -226,7 +226,7 @@ class UserController extends BaseController
 
     protected function formatRegisterData($data, $clientIp){
         //初始化拼音
-        $PinYin = new PinYinToolkit();
+        $PinYin = new PinyinToolkit();
 
         //format data
         $arrs = array();

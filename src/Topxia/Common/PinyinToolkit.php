@@ -10,7 +10,7 @@ namespace Topxia\Common;
  *      echo $py->getAllPY("输出汉字所有拼音"); //shuchuhanzisuoyoupinyin
  *        echo $py->getFirstPY("输出汉字首拼音"); //schzspy
  */
-class PinYinToolkit {
+class PinyinToolkit {
     private $pylist = array(
     'a'=>-20319,'ai'=>-20317,'an'=>-20304,'ang'=>-20295,'ao'=>-20292,
     'ba'=>-20283,'bai'=>-20265,'ban'=>-20257,'bang'=>-20242,'bao'=>-20230,'bei'=>-20051,'ben'=>-20036,'beng'=>-20032,'bi'=>-20026,'bian'=>-20002,'biao'=>-19990,'bie'=>-19986,'bin'=>-19982,'bing'=>-19976,'bo'=>-19805,'bu'=>-19784,
