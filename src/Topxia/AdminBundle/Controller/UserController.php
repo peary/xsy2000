@@ -185,7 +185,7 @@ class UserController extends BaseController
                     if($i > 0){
                         $orginals[] = $data;
                     }
-                    if($i > 500){
+                    if($i > 3000){
                         $flag = false;
                         break;
                     }
