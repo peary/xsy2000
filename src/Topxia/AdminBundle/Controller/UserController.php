@@ -169,8 +169,9 @@ class UserController extends BaseController
             }
 
             //移动文件
-            $newfile = $_SERVER['DOCUMENT_ROOT'].'/files/tmp/'.md5($_FILES["uploadcsv"]["name"]).'.csv';
-            if(move_uploaded_file($_FILES["uploadcsv"]["tmp_name"],$newfile)){
+            //$newfile = $_SERVER['DOCUMENT_ROOT'].'/files/tmp/'.md5($_FILES["uploadcsv"]["name"]).'.csv';
+            $newfile = $_FILES["uploadcsv"]["tmp_name"];
+//            if(move_uploaded_file($_FILES["uploadcsv"]["tmp_name"],$newfile)){
                 $orginals = array();
 
                 $file = fopen($newfile,'r');
@@ -206,9 +207,6 @@ class UserController extends BaseController
                     $user = $this->getAuthService()->register($vo);
                     //插入用户信息表
                     if(isset($user['id'])){
-                        //新定义方法
-                        //$profile['id'] = $user['id'];
-                        //$this->getUserService()->insertUserProfile($profile);
                         //更新用户信息表
                         $this->getUserService()->updateUserProfile($user['id'],$profile);
                     }
@@ -218,7 +216,7 @@ class UserController extends BaseController
 
                 //删除文件
                 unlink($newfile);
-            }
+//            }
 
     		return $this->redirect($this->generateUrl('admin_user'));
     	}
