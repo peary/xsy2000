@@ -185,21 +185,20 @@ class UserController extends BaseController
                     if($i > 0){
                         $orginals[] = $data;
                     }
-                    if($i > 100){
+                    if($i > 500){
                         $flag = false;
                         break;
                     }
                     $i++;
                 }
                 if($flag == false){
-                    $this->setFlashMessage('danger', 'csv文件格式不对或者超过100条记录');
+                    $this->setFlashMessage('danger', 'csv文件格式不对或者超过500条记录');
                 } else {
-                    $this->setFlashMessage('danger', 'csv文件成功导入'.count($orginals).'个新用户');
-                    //格式化数据
-                    $regs = $this->formatRegisterData($orginals, $request->getClientIp());
-                    //print_r($regs);exit;
+                    $clientIp = $request->getClientIp();
                     //导入数据
-                    foreach($regs as $vo){
+                    foreach($orginals as $regs){
+                        //格式化数据
+                        $vo = $this->formatRegisterData($regs, $clientIp);
                         $profile = $vo['profile'];
                         unset($vo['profile']);
 
@@ -213,6 +212,8 @@ class UserController extends BaseController
                     }
 
                     $this->getLogService()->info('user', 'add', "管理员操作批量添加新用户");
+
+                    $this->setFlashMessage('danger', 'csv文件成功导入'.count($orginals).'个新用户');
                 }
 
                 //删除文件
@@ -230,45 +231,40 @@ class UserController extends BaseController
         $PinYin = new PinyinToolkit();
 
         //format data
-        $arrs = array();
-        for($i=0; $i<count($data); $i++){
-            $nickname = $data[$i][0];
-            $password = $PinYin->getAllPY($nickname);
-            $email = $password.'@xsy2000.com';
+        $nickname = $data[0];
+        $password = $PinYin->getAllPY($nickname);
+        $email = $password.'@xsy2000.com';
 
-            $item = array(
-                'email'=>$email,
-                'nickname'=>$nickname,
-                'password'=>$password,
-                'createdIp'=>$clientIp,
-                'type'=>'import',
-                'profile'=>array(
-                    'truename'=>$data[$i][0],
-                    'varcharField1'=>$data[$i][3],
-                    'varcharField2'=>$data[$i][2],
-                    'varcharField3'=>$data[$i][1]
-                )
-            );
+        $item = array(
+            'email'=>$email,
+            'nickname'=>$nickname,
+            'password'=>$password,
+            'createdIp'=>$clientIp,
+            'type'=>'import',
+            'profile'=>array(
+                'truename'=>$data[0],
+                'varcharField1'=>$data[3],
+                'varcharField2'=>$data[2],
+                'varcharField3'=>$data[1]
+            )
+        );
 
-            //检查用户是否存在
-            list($result1, $message1) = $this->getAuthService()->checkEmail($email);
-            if($result1 != 'success'){
-                $tmp = rand(1000,9999);
-                $item['email'] = $password.$tmp.'@xsy2000.com';
-                $item['nickname'] = $nickname.$tmp;
-            }
-
-            list($result2, $message2) = $this->getAuthService()->checkUsername($nickname);
-            if($result2 != 'success'){
-                $tmp = rand(1000,9999);
-                $item['email'] = $password.$tmp.'@xsy2000.com';
-                $item['nickname'] = $nickname.$tmp;
-            }
-
-            $arrs[] = $item;
+        //检查用户是否存在
+        list($result1, $message1) = $this->getAuthService()->checkEmail($email);
+        if($result1 != 'success'){
+            $tmp = rand(1000,9999);
+            $item['email'] = $password.$tmp.'@xsy2000.com';
+            $item['nickname'] = $nickname.$tmp;
         }
 
-        return $arrs;
+        list($result2, $message2) = $this->getAuthService()->checkUsername($nickname);
+        if($result2 != 'success'){
+            $tmp = rand(1000,9999);
+            $item['email'] = $password.$tmp.'@xsy2000.com';
+            $item['nickname'] = $nickname.$tmp;
+        }
+
+        return $item;
     }
 
     protected function getRegisterData($formData, $clientIp)
