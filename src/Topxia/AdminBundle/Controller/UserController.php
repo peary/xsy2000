@@ -194,6 +194,7 @@ class UserController extends BaseController
                 if($flag == false){
                     $this->setFlashMessage('danger', 'csv文件格式不对或者超过100条记录');
                 } else {
+                    $this->setFlashMessage('danger', 'csv文件导入成功导入'.count($orginals).'个新用户');
                     //格式化数据
                     $regs = $this->formatRegisterData($orginals, $request->getClientIp());
                     //print_r($regs);exit;
