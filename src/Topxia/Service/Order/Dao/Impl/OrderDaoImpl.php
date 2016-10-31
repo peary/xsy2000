@@ -143,7 +143,8 @@ class OrderDaoImpl extends BaseDao implements OrderDao
         }
 
         return $this->createDynamicQueryBuilder($conditions)
-                    ->from($this->table, 'course_order')
+                    ->from($this->table, '_to')
+        			->leftJoin('_to', 'user_profile', '_tu', '_to.userId = _tu.id')
                     ->andWhere('sn = :sn')
                     ->andWhere('targetType = :targetType')
                     ->andWhere('targetId = :targetId')
