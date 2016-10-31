@@ -39,7 +39,7 @@ class OrderController extends BaseController
             $paginator->getOffsetCount(),
             $paginator->getPerPageCount()
         );
-
+		print_r($orders);
         $users = $this->getUserService()->findUsersByIds(ArrayToolkit::column($orders, 'userId'));
 
         foreach ($orders as $index => $expiredOrderToBeUpdated) {
@@ -248,8 +248,8 @@ class OrderController extends BaseController
             } else {
                 $member .= "-".",";
             }
-            $member .= $profiles[$orders['userId']]['varcharField1'];
-            $member .= $profiles[$orders['userId']]['varcharField2'];
+            $member .= $profiles[$orders['userId']]['varcharField1'].",";
+            $member .= $profiles[$orders['userId']]['varcharField2'].",";
             $member .= $profiles[$orders['userId']]['varcharField3'];
             
             $results[] = $member;
@@ -298,12 +298,12 @@ class OrderController extends BaseController
             $member .= date('Y-n-d H:i:s', $orders['createdTime']).",";
 
             if ($orders['paidTime'] != 0) {
-                $member .= date('Y-n-d H:i:s', $orders['paidTime']);
+                $member .= date('Y-n-d H:i:s', $orders['paidTime']).",";
             } else {
-                $member .= "-";
+                $member .= "-".",";
             }
-            $member .= $profiles[$orders['userId']]['varcharField1'];
-            $member .= $profiles[$orders['userId']]['varcharField2'];
+            $member .= $profiles[$orders['userId']]['varcharField1'].",";
+            $member .= $profiles[$orders['userId']]['varcharField2'].",";
             $member .= $profiles[$orders['userId']]['varcharField3'];
             
             $results[] = $member;
