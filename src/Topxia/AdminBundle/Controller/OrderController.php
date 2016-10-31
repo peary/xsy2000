@@ -39,7 +39,7 @@ class OrderController extends BaseController
             $paginator->getOffsetCount(),
             $paginator->getPerPageCount()
         );
-		print_r($orders);
+		// print_r($orders);
         $users = $this->getUserService()->findUsersByIds(ArrayToolkit::column($orders, 'userId'));
 
         foreach ($orders as $index => $expiredOrderToBeUpdated) {
