@@ -124,9 +124,9 @@ class OrderController extends BaseController
         $profiles = ArrayToolkit::index($profiles, 'id');
 
         if ($targetType == 'vip') {
-            $str = "订单号,订单状态,订单名称,购买者,姓名,实付价格,支付方式,创建时间,付款时间";
+            $str = "订单号,订单状态,订单名称,购买者,姓名,实付价格,支付方式,创建时间,付款时间,学校名称,学校班级,老师";
         } else {
-            $str = "订单号,订单状态,订单名称,订单价格,优惠码,优惠金额,虚拟币支付,实付价格,支付方式,购买者,姓名,操作,创建时间,付款时间";
+            $str = "订单号,订单状态,订单名称,订单价格,优惠码,优惠金额,虚拟币支付,实付价格,支付方式,购买者,姓名,操作,创建时间,付款时间,学校名称,学校班级,老师";
         }
 
         $str .= "\r\n";
@@ -226,6 +226,12 @@ class OrderController extends BaseController
 
     private function generateVipExportData($orders, $status, $users, $profiles, $payment, $results)
     {
+    	// $str = "
+    	// 订单号,订单状态,订单名称,订单价格,优惠码,
+    	// 优惠金额,虚拟币支付,实付价格,支付方式,购买者,
+    	// 姓名,操作,创建时间,付款时间,学校,班级,老师
+    	// ";
+    	
         foreach ($orders as $key => $orders) {
             $member = "";
             $member .= $orders['sn'].",";
@@ -242,7 +248,10 @@ class OrderController extends BaseController
             } else {
                 $member .= "-".",";
             }
-
+            $member .= $profiles[$orders['userId']]['varcharField1'];
+            $member .= $profiles[$orders['userId']]['varcharField2'];
+            $member .= $profiles[$orders['userId']]['varcharField3'];
+            
             $results[] = $member;
         }
 
@@ -251,6 +260,11 @@ class OrderController extends BaseController
 
     private function generateExportData($orders, $status, $payment, $users, $profiles, $results)
     {
+		// $str = "
+		// 订单号,订单状态,订单名称,订单价格,优惠码,
+		// 优惠金额,虚拟币支付,实付价格,支付方式,购买者,
+		// 姓名,操作,创建时间,付款时间,学校,班级,老师
+		// ";
         foreach ($orders as $key => $orders) {
             $member = "";
             $member .= $orders['sn'].",";
@@ -288,7 +302,10 @@ class OrderController extends BaseController
             } else {
                 $member .= "-";
             }
-
+            $member .= $profiles[$orders['userId']]['varcharField1'];
+            $member .= $profiles[$orders['userId']]['varcharField2'];
+            $member .= $profiles[$orders['userId']]['varcharField3'];
+            
             $results[] = $member;
         }
 
