@@ -84,6 +84,18 @@ class UserDaoImpl extends BaseDao implements UserDao
         return $this->getConnection()->fetchAll($sql, $nicknames);
     }
 
+    public function findUsersByEmails(array $emails)
+    {
+        if (empty($emails)) {
+            return array();
+        }
+
+        $marks = str_repeat('?,', count($emails) - 1).'?';
+        $sql   = "SELECT * FROM {$this->table} WHERE email IN ({$marks});";
+
+        return $this->getConnection()->fetchAll($sql, $emails);
+    }
+
     public function findUsersByIds(array $ids)
     {
         if (empty($ids)) {

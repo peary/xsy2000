@@ -16,6 +16,8 @@ interface UserDao
 
     public function findUsersByNicknames(array $nicknames);
 
+    public function findUsersByEmails(array $emails);
+
     public function findUsersByIds(array $ids);
 
     public function getUserByInviteCode($code); //

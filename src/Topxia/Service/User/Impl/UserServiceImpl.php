@@ -36,6 +36,36 @@ class UserServiceImpl extends BaseService implements UserService
         return !$user ? null : UserSerialize::unserialize($user);
     }
 
+    public function getUsersByNicknames($nicknames){
+        $users = $this->getUserDao()->findUsersByNicknames(array_unique($nicknames));
+
+        if (empty($users)) {
+            return array();
+        }
+
+        $ats = array();
+
+        foreach ($users as $user) {
+            $ats[$user['nickname']] = $user['id'];
+        }
+        return $ats;
+    }
+
+    public function getUsersByEmails($emails){
+        $users = $this->getUserDao()->findUsersByEmails(array_unique($emails));
+
+        if (empty($users)) {
+            return array();
+        }
+
+        $ats = array();
+
+        foreach ($users as $user) {
+            $ats[$user['email']] = $user['id'];
+        }
+        return $ats;
+    }
+
     public function getUserByLoginField($keyword)
     {
         if (SimpleValidator::email($keyword)) {
@@ -315,6 +345,11 @@ class UserServiceImpl extends BaseService implements UserService
         return empty($user) ? true : false;
     }
 
+    public function checkEmailNickname($keywords){
+
+
+    }
+
     public function isMobileAvaliable($mobile)
     {
         if (empty($mobile)) {
@@ -528,18 +563,25 @@ class UserServiceImpl extends BaseService implements UserService
 
     public function register($registration, $type = 'default')
     {
-        $this->validateNickname($registration['nickname']);
+        //跳过检查
+        if($type != 'jump') {
+            $this->validateNickname($registration['nickname']);
 
-        if (!$this->isNicknameAvaliable($registration['nickname'])) {
-            throw $this->createServiceException('昵称已存在');
+            if (!$this->isNicknameAvaliable($registration['nickname'])) {
+                throw $this->createServiceException('昵称已存在');
+            }
+
+            if (!SimpleValidator::email($registration['email'])) {
+                throw $this->createServiceException('email error!');
+            }
+
+            if (!$this->isEmailAvaliable($registration['email'])) {
+                throw $this->createServiceException('Email已存在');
+            }
         }
-
-        if (!SimpleValidator::email($registration['email'])) {
-            throw $this->createServiceException('email error!');
-        }
-
-        if (!$this->isEmailAvaliable($registration['email'])) {
-            throw $this->createServiceException('Email已存在');
+        //恢复类型
+        if($type == 'jump'){
+            $type = 'default';
         }
 
         $user = array();

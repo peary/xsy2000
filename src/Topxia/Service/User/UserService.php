@@ -7,6 +7,10 @@ interface UserService
 
     public function getUserByNickname($nickname);
 
+    //批量查找用户
+    public function getUsersByNicknames($nicknames);
+    public function getUsersByEmails($emails);
+
     //根据用户名/邮箱/手机号精确查找用户
     public function getUserByLoginField($keyword);
 
@@ -37,6 +41,8 @@ interface UserService
     public function changeNickname($userId, $nickname);
 
     public function changeEmail($userId, $email);
+
+    public function checkEmailNickname($keywords);
 
     public function changeAvatar($userId, $data);
 

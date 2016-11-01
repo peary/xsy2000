@@ -171,54 +171,53 @@ class UserController extends BaseController
             //移动文件
             //$newfile = $_SERVER['DOCUMENT_ROOT'].'/files/tmp/'.md5($_FILES["uploadcsv"]["name"]).'.csv';
             $newfile = $_FILES["uploadcsv"]["tmp_name"];
-//            if(move_uploaded_file($_FILES["uploadcsv"]["tmp_name"],$newfile)){
-                $orginals = array();
+            $orginals = array();
 
-                $file = fopen($newfile,'r');
-                $i = 0; $flag = true;
-                while ($data = fgetcsv($file)) {
-                    $data = eval('return '.iconv('gbk','utf-8',var_export($data,true)).';');
-                    if(count($data) != 4){
-                        $flag = false;
-                        break;
-                    }
-                    if($i > 0){
-                        $orginals[] = $data;
-                    }
-                    if($i > 500){
-                        $flag = false;
-                        break;
-                    }
-                    $i++;
+            $file = fopen($newfile,'r');
+            $i = 0; $flag = true;
+            while ($data = fgetcsv($file)) {
+                foreach($data as $k=>$v){
+                    $data[$k] = @iconv('gbk','utf-8',$v);
                 }
-                if($flag == false){
-                    $this->setFlashMessage('danger', 'csv文件格式不对或者超过500条记录');
-                } else {
-                    $clientIp = $request->getClientIp();
-                    //导入数据
-                    foreach($orginals as $regs){
-                        //格式化数据
-                        $vo = $this->formatRegisterData($regs, $clientIp);
-                        $profile = $vo['profile'];
-                        unset($vo['profile']);
+                //$data = eval('return '.iconv('gbk','utf-8',var_export($data,true)).';');
+                if(count($data) != 4){
+                    $flag = false;
+                    break;
+                }
+                if($i > 0){
+                    $orginals[] = $data;
+                }
+                if($i > 200){
+                    $flag = false;
+                    break;
+                }
+                $i++;
+            }
+            if($flag == false){
+                $this->setFlashMessage('danger', 'csv文件格式不对或者超过200条记录');
+            } else {
+                $clientIp = $request->getClientIp();
+                //批量检查数据
+                $regs = $this->formatRegisterData($orginals, $clientIp);
+                //print_r($regs);exit;
+                //导入数据
+                foreach($regs as $vo){
+                    //格式化数据
+                    $profile = $vo['profile'];
+                    unset($vo['profile']);
 
-                        //注册账号
-                        $user = $this->getAuthService()->register($vo);
-                        //插入用户信息表
-                        if(isset($user['id'])){
-                            //更新用户信息表
-                            $this->getUserService()->updateUserProfile($user['id'],$profile);
-                        }
-                    }
-
-                    $this->getLogService()->info('user', 'add', "管理员操作批量添加新用户");
-
-                    $this->setFlashMessage('danger', 'csv文件成功导入'.count($orginals).'个新用户');
+                    //注册账号
+                    $reg = array_merge($vo,$profile);
+                    $user = $this->getUserService()->register($reg,'jump');
                 }
 
-                //删除文件
-                unlink($newfile);
-//            }
+                $this->getLogService()->info('user', 'add', "管理员操作批量添加新用户");
+
+                $this->setFlashMessage('danger', 'csv文件成功导入'.count($orginals).'个新用户');
+            }
+
+            //删除文件
+            unlink($newfile);
 
             return $this->redirect($this->generateUrl('admin_user'));
     	}
@@ -231,40 +230,55 @@ class UserController extends BaseController
         $PinYin = new PinyinToolkit();
 
         //format data
-        $nickname = $data[0];
-        $password = $PinYin->getAllPY($nickname);
-        $email = $password.'@xsy2000.com';
+        $nicknames = array();
+        $emails = array();
+        $arrs = array();
+        foreach($data as $vo){
+            $nickname = $vo[0];
+            $password = $PinYin->getAllPY($nickname);
+            $email = $password.'@xsy2000.com';
 
-        $item = array(
-            'email'=>$email,
-            'nickname'=>$nickname,
-            'password'=>$password,
-            'createdIp'=>$clientIp,
-            'type'=>'import',
-            'profile'=>array(
-                'truename'=>$data[0],
-                'varcharField1'=>$data[3],
-                'varcharField2'=>$data[2],
-                'varcharField3'=>$data[1]
-            )
-        );
+            $item = array(
+                'email'=>$email,
+                'nickname'=>$nickname,
+                'password'=>$password,
+                'createdIp'=>$clientIp,
+                'type'=>'import',
+                'profile'=>array(
+                    'truename'=>$vo[0],
+                    'varcharField1'=>$vo[3],
+                    'varcharField2'=>$vo[2],
+                    'varcharField3'=>$vo[1]
+                )
+            );
 
-        //检查用户是否存在
-        list($result1, $message1) = $this->getAuthService()->checkEmail($email);
-        if($result1 != 'success'){
-            $tmp = rand(1000,9999);
-            $item['email'] = $password.$tmp.'@xsy2000.com';
-            $item['nickname'] = $nickname.$tmp;
+            //检查用户邮箱和注册账号
+            $emails[] = $email;
+            $nicknames[] = $nickname;
+
+            //整理好的数据
+            $arrs[] = $item;
         }
 
-        list($result2, $message2) = $this->getAuthService()->checkUsername($nickname);
-        if($result2 != 'success'){
-            $tmp = rand(1000,9999);
-            $item['email'] = $password.$tmp.'@xsy2000.com';
-            $item['nickname'] = $nickname.$tmp;
+        //批量检查注册用户
+        $result1 = $this->getUserService()->getUsersByNicknames($nicknames);
+        $check_nicknames = array_keys($result1);
+
+        //批量检查注册邮箱
+        $result2 = $this->getUserService()->getUsersByEmails($emails);
+        $check_emails = array_keys($result2);
+
+        //检查是否有重复
+        foreach($arrs as $k=>$v){
+            if(in_array($v['email'], $check_emails)){
+                $arrs[$k]['email'] = $v['password'].rand(1000,9999).'@xsy2000.com';
+            }
+            if(in_array($v['nickname'], $check_nicknames)){
+                $arrs[$k]['nickname'] = $v['nickname'].rand(1000,9999);
+            }
         }
 
-        return $item;
+        return $arrs;
     }
 
     protected function getRegisterData($formData, $clientIp)
