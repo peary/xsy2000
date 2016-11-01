@@ -187,14 +187,14 @@ class UserController extends BaseController
                 if($i > 0){
                     $orginals[] = $data;
                 }
-                if($i > 200){
+                if($i > 500){
                     $flag = false;
                     break;
                 }
                 $i++;
             }
             if($flag == false){
-                $this->setFlashMessage('danger', 'csv文件格式不对或者超过200条记录');
+                $this->setFlashMessage('danger', 'csv文件格式不对或者超过500条记录');
             } else {
                 $clientIp = $request->getClientIp();
                 //批量检查数据
