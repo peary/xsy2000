@@ -18,6 +18,9 @@
         <th>{{'购买者'|trans}}</th>
       {% endif %}
       <th>{{'支付方式'|trans}}</th>
+      <th>{{'学校名称'|trans}}</th>
+      <th>{{'学校班级'|trans}}</th>
+      <th>{{'老师'|trans}}</th>
       <th style="min-width:100px">{{'操作'|trans}}</th>
     </tr>
   </thead>
@@ -54,6 +57,15 @@
             {% else %}
               --
             {% endif %}
+          </td>
+          <td>
+          	{{ order.varcharField1 }}
+          </td>
+          <td>
+          	{{ order.varcharField2 }}
+          </td>
+          <td>
+          	{{ order.varcharField3 }}
           </td>
           <td>
             {% if 'admin' == mode  %}

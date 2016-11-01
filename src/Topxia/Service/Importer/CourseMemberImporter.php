@@ -249,8 +249,8 @@ class CourseMemberImporter extends Importer
 
         $this->excelAnalyse($file);
 
-        if ($this->rowTotal > 1000) {
-            return $this->createDangerResponse('Excel超过1000行数据!');
+        if ($this->rowTotal > 3000) {
+            return $this->createDangerResponse('Excel超过3000行数据!');
         }
 
         if (!$this->checkNecessaryFields($this->excelFields)) {
