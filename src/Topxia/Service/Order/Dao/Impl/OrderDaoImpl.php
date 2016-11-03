@@ -148,9 +148,9 @@ class OrderDaoImpl extends BaseDao implements OrderDao
 		# flush();
 		# print_r($conditions);
         return $this->createDynamicQueryBuilder($conditions)
-					->addSelect(array('_tu'))
+					#->addSelect(array('_tu'))
                     ->from($this->table, '_to')
-        			->innerJoin('_to', 'user_profile', '_tu', '_tu.id = _to.userId')
+        			->leftJoin('_to', 'user_profile', '_tu', '_tu.id = _to.userId')
 					->andWhere('_tu.varcharField1 LIKE :school')
 					->andWhere('_tu.varcharField2 LIKE :classname')
 					->andWhere('_tu.varcharField3 LIKE :teacher')
