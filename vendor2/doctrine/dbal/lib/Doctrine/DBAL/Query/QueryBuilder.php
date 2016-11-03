@@ -688,14 +688,6 @@ class QueryBuilder
      */
     public function leftJoin($fromAlias, $join, $alias, $condition = null)
     {
-		print_r(
-			array(
-                'joinType'      => 'left',
-                'joinTable'     => $join,
-                'joinAlias'     => $alias,
-                'joinCondition' => $condition
-            )
-		);
         return $this->add('join', array(
             $fromAlias => array(
                 'joinType'      => 'left',
