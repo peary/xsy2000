@@ -59,7 +59,7 @@ class LogServiceImpl extends BaseService implements LogService
 
     protected function addLog($level, $module, $action, $message, array $data = null)
     {
-        return $this->getLogDao()->addLog(array(
+        $log = array(
             'module'      => Logger::getModule($module),
             'action'      => $action,
             'message'     => $message,
@@ -68,7 +68,9 @@ class LogServiceImpl extends BaseService implements LogService
             'ip'          => $this->getCurrentUser()->currentIp,
             'createdTime' => time(),
             'level'       => $level
-        ));
+        );
+        print_r($log);
+        return $this->getLogDao()->addLog($log);
     }
 
     protected function getLogDao()
