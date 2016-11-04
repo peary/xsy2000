@@ -69,7 +69,6 @@ class LogServiceImpl extends BaseService implements LogService
             'createdTime' => time(),
             'level'       => $level
         );
-        print_r($log);
         return $this->getLogDao()->addLog($log);
     }
 
