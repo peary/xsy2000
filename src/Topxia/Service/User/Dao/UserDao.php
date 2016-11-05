@@ -40,4 +40,6 @@ interface UserDao
 
     public function findUsersCountByLessThanCreatedTime($endTime);
 
+    public function getUserDistrictList();
+
 }

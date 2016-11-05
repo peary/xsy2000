@@ -60,6 +60,32 @@ class UserDaoImpl extends BaseDao implements UserDao
         return $this->getConnection()->fetchColumn($sql, array(), 0);
     }
 
+    public function getUserDistrictList()
+    {
+        $sql   = "SELECT sl.*, d.name as district_name FROM school_list as sl left join school_district as d on sl.district_code=d.code";
+        $list = $this->getConnection()->fetchAll($sql);
+        $arrs = array();
+        foreach($list as $vo){
+            $district_code = $vo['district_code'];
+            if(!isset($arrs[$district_code])){
+                $arrs[$district_code] = array(
+                    'id'=>$district_code,
+                    'name'=>$vo['district_name'],
+                    'sub'=>array()
+                );
+            }
+            $arrs[$district_code]['sub'][] = array(
+                'id'=>$vo['school_code'],
+                'name'=>$vo['school_name']
+            );
+        }
+        $res = array();
+        foreach($arrs as $vo){
+            $res[] = $vo;
+        }
+        return $res;
+    }
+
     public function findUserByVerifiedMobile($mobile)
     {
         $that = $this;

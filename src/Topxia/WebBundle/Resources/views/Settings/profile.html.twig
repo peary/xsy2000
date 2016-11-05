@@ -130,13 +130,16 @@
 
 					<div class="row">
 						<div class="col-md-7 col-md-offset-2">
-							<button id="profile-save-btn" data-submiting-text="{{'正在保存'|trans}}" type="submit" class="btn btn-primary">{{'保存'|trans}}</button>
+							<button id="profile-save-btn" data-submiting-text="{{'正在保存'|trans}}" type="button" class="btn btn-primary">{{'保存'|trans}}</button>
 						</div>
 					</div>
 
 					<input type="hidden" name="_csrf_token" value="{{ csrf_token('site') }}">
 			</form>
-
+            <script type="text/javascript">
+               var districtUrl ='{{ path("settings_district") }}';
+            </script>
 		{% endblock %}
 	{% endembed %}
 {% endblock %}
+

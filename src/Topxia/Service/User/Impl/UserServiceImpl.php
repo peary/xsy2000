@@ -14,6 +14,10 @@ use Topxia\Service\User\UserService;
 
 class UserServiceImpl extends BaseService implements UserService
 {
+    public function getUserDistrict(){
+        return $this->getUserDao()->getUserDistrictList();
+    }
+
     public function getUser($id, $lock = false)
     {
         $user = $this->getUserDao()->getUser($id, $lock);

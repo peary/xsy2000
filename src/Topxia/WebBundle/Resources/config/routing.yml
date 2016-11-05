@@ -1175,6 +1175,10 @@ settings:
     pattern:  /settings/
     defaults: { _controller: TopxiaWebBundle:Settings:profile }
 
+settings_district:
+    pattern:  /settings/district
+    defaults: { _controller: TopxiaWebBundle:Settings:district }
+
 settings_avatar:
     pattern:  /settings/avatar
     defaults: { _controller: TopxiaWebBundle:Settings:avatar }

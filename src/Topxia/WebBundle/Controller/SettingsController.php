@@ -47,6 +47,13 @@ class SettingsController extends BaseController
         ));
     }
 
+    public function districtAction(){
+        $list = $this->getUserService()->getUserDistrict();
+        $response = array('success' => true, 'message' => '', 'data'=>$list);
+
+        return $this->createJsonResponse($response);
+    }
+
     public function approvalSubmitAction(Request $request)
     {
         $user              = $this->getCurrentUser();
