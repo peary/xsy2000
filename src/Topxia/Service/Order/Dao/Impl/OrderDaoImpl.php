@@ -147,10 +147,10 @@ class OrderDaoImpl extends BaseDao implements OrderDao
 
 		# flush();
 		# print_r($conditions);
-        return $this->createDynamicQueryBuilder($conditions)
-					->addSelect(array('_tu'))
+        $qb = $this->createDynamicQueryBuilder($conditions)
+					->addSelect('_to.*', '_tu.varcharField1', '_tu.varcharField2', '_tu.varcharField3')
                     ->from($this->table, '_to')
-        			->innerJoin('_to', 'user_profile', '_tu', '_tu.id = _to.userId')
+        			->leftJoin('_to', 'user_profile', '_tu', '_tu.id = _to.userId')
 					->andWhere('_tu.varcharField1 LIKE :school')
 					->andWhere('_tu.varcharField2 LIKE :classname')
 					->andWhere('_tu.varcharField3 LIKE :teacher')
@@ -172,6 +172,8 @@ class OrderDaoImpl extends BaseDao implements OrderDao
                     ->andWhere('createdTime < :endTime')
                     ->andWhere('createdTime < :createdTime_LT')
                     ->andWhere('title LIKE :title');
+		#print $qb -> getSQL();
+		return $qb;
     }
 
     public function sumOrderPriceByTargetAndStatuses($targetType, $targetId, array $statuses)

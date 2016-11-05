@@ -332,7 +332,8 @@ class UserController extends BaseController
 
             if (!((strlen($user['verifiedMobile']) > 0) && isset($profile['mobile']))) {
                 $profile = $this->getUserService()->updateUserProfile($user['id'], $profile);
-                $this->getLogService()->info('user', 'edit', "管理员编辑用户资料 {$user['nickname']} (#{$user['id']})", $profile);
+                $this->getLogService()->info('user', 'edit_after', "管理员编辑用户资料 {$user['nickname']} (#{$user['id']})", $profile);
+                $this->setFlashMessage('danger', serialize($profile));
             } else {
                 $this->setFlashMessage('danger', '用户已绑定的手机不能修改。');
             }
