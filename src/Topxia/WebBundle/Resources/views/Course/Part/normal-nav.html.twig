@@ -4,11 +4,10 @@
   <ul class="nav nav-tabs" role="tablist">
     {% if not member %}
       <li role="presentation" {% if tab == 'overview' %}class="active"{% endif %}><a {% if previewAs %}href="{{ path('course_show', {id:course.id,previewAs:'guest'}) }}"{% else %}href="{{ path('course_show', {id:course.id}) }}" {% endif %}>{{'课程概览'|trans}}</a></li>
-      <li role="presentation" {% if tab == 'lesson-list' %}class="active"{% endif %}><a {% if previewAs %}href="{{ path('course_lesson_list', {id:course.id, previewAs:'guest'}) }}"{% else %}href="{{ path('course_lesson_list', {id:course.id})}}"{% endif %}>{{'微课讲解'|trans}}</a></li>
     {% else %}
       <li role="presentation" {% if tab == 'info' %}class="active"{% endif %}><a {% if previewAs %}href="{{ path('course_info', {id:course.id,previewAs:'member'}) }}"{% else %}href="{{ path('course_info', {id:course.id}) }}" {% endif %}>{{'课程概览'|trans}}</a></li>
-      <li role="presentation" {% if tab == 'overview' %}class="active"{% endif %}><a {% if previewAs %}href="{{ path('course_show', {id:course.id, previewAs:'member'}) }}"{% else %}href="{{ path('course_show', {id:course.id})}}"{% endif %}>{{'微课讲解'|trans}}</a></li>
       <li role="presentation" {% if tab == 'thread' %}class="active"{% endif %}><a {% if previewAs %}href="{{ path('course_threads', {id:course.id, previewAs:'member'}) }}"{% else %}href="{{ path('course_threads', {id:course.id}) }}"{% endif %}>{{'反馈讨论'|trans}}</a></li>
+      <li role="presentation" {% if tab == 'overview' %}class="active"{% endif %}><a {% if previewAs %}href="{{ path('course_show', {id:course.id, previewAs:'member'}) }}"{% else %}href="{{ path('course_show', {id:course.id})}}"{% endif %}>{{'微课讲解'|trans}}</a></li>
       <li role="presentation" {% if tab == 'material' %}class="active"{% endif %}><a {% if previewAs %}href="{{ path('course_materials', {id:course.id, previewAs:'member'}) }}"{% else %}href="{{ path('course_materials', {id:course.id}) }}"{% endif %}>{{'资料区'|trans}}</a></li>
 
     {% endif %}
