@@ -89,7 +89,7 @@ class OrderDaoImpl extends BaseDao implements OrderDao
     {
         $this->filterStartLimit($start, $limit);
         $builder = $this->_createSearchQueryBuilder($conditions)
-                        ->select('*')
+                        ->select('_to.*, _tu.varcharField1, _tu.varcharField2, _tu.varcharField3')
                         ->orderBy($orderBy[0], $orderBy[1])
                         ->setFirstResult($start)
                         ->setMaxResults($limit);
@@ -148,7 +148,6 @@ class OrderDaoImpl extends BaseDao implements OrderDao
 		# flush();
 		# print_r($conditions);
         $qb = $this->createDynamicQueryBuilder($conditions)
-					->addSelect('_to.*', '_tu.varcharField1', '_tu.varcharField2', '_tu.varcharField3')
                     ->from($this->table, '_to')
         			->leftJoin('_to', 'user_profile', '_tu', '_tu.id = _to.userId')
 					->andWhere('_tu.varcharField1 LIKE :school')
