@@ -1155,7 +1155,6 @@ admin_approval_info_view:
     defaults: { _controller: TopxiaAdminBundle:UserApproval:viewApprovalInfo }
 
 
-
 admin_approval_cancel:
     pattern:  approvals/{id}/cancel
     defaults: { _controller: TopxiaAdminBundle:UserApproval:cancel }
