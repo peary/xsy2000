@@ -18,11 +18,16 @@ define(function(require, exports, module) {
         var validator = new Validator({
             element: '#user-edit-form',
             autoSubmit: false,
-             failSilently: true,
+            failSilently: true,
             onFormValidated: function(error, results, $form) {
                 if (error) {
                     return false;
                 }
+                //检查数据
+                if(editObj.onValidata() == false) {
+                    return false;
+                }
+
                 $('#edit-user-btn').button('submiting').addClass('disabled');
 
                 $.post($form.attr('action'), $form.serialize(), function(html) {
@@ -90,6 +95,11 @@ define(function(require, exports, module) {
              });
         }
 
+        //初始化对象
+        var districtUrl = window.districtUrl || '';
+        if(!!districtUrl){
+            var editObj = new Create();
+        }
     };
 
     function Create() {
@@ -147,11 +157,12 @@ define(function(require, exports, module) {
             });
 
             //提交
-            $('#user-edit-btn').on('click', function(){
-                if(self.onValidata()){
-                    $('#user-edit-form').submit();
-                }
-            });
+            //$('#user-edit-btn').on('click', function(){
+            //    console.log(1);
+            //    if(self.onValidata()){
+            //        $('#user-edit-form').submit();
+            //    }
+            //});
         },
         onValidata: function (){
             //填充数据
@@ -265,10 +276,10 @@ define(function(require, exports, module) {
     };
 
     //初始化
-    $(document).ready(function(){
-        var districtUrl = window.districtUrl || '';
-        if(!!districtUrl){
-            new Create();
-        }
-    });
+    //$(document).ready(function(){
+    //    var districtUrl = window.districtUrl || '';
+    //    if(!!districtUrl){
+    //        new Create();
+    //    }
+    //});
 });
