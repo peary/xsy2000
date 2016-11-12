@@ -4,8 +4,7 @@ namespace Topxia\Component\OAuthClient;
 class WeixinwebOAuthClient extends AbstractOAuthClient
 {
     const USERINFO_URL    = 'https://api.weixin.qq.com/sns/userinfo';
-    #const AUTHORIZE_URL   = 'https://open.weixin.qq.com/connect/qrconnect?';
-    const AUTHORIZE_URL   = 'https://open.weixin.qq.com/connect/oauth2/authorize?';
+    const AUTHORIZE_URL   = 'https://open.weixin.qq.com/connect/qrconnect?';
     const OAUTH_TOKEN_URL = 'https://api.weixin.qq.com/sns/oauth2/access_token';
 
     public function getAuthorizeUrl($callbackUrl)
