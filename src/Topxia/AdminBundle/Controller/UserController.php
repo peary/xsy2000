@@ -39,16 +39,26 @@ class UserController extends BaseController
             $paginator->getPerPageCount()
         );
 
-//根据mobile查询user_profile获得userIds
-
-        if (isset($conditions['keywordType']) && $conditions['keywordType'] == 'verifiedMobile' && !empty($conditions['keyword'])) {
-            $profilesCount = $this->getUserService()->searchUserProfileCount(array('mobile' => $conditions['keyword']));
-            $userProfiles  = $this->getUserService()->searchUserProfiles(
-                array('mobile' => $conditions['keyword']),
-                array('id', 'DESC'),
-                0,
-                $profilesCount
-            );
+        //根据mobile查询user_profile获得userIds
+        if (isset($conditions['keywordType']) && ($conditions['keywordType'] == 'verifiedMobile' || $conditions['keywordType'] == 'truename') && !empty($conditions['keyword'])) {
+            if($conditions['keywordType'] == 'verifiedMobile'){
+                $profilesCount = $this->getUserService()->searchUserProfileCount(array('mobile' => $conditions['keyword']));
+                $userProfiles  = $this->getUserService()->searchUserProfiles(
+                    array('mobile' => $conditions['keyword']),
+                    array('id', 'DESC'),
+                    0,
+                    $profilesCount
+                );
+            }
+            else if($conditions['keywordType'] == 'truename'){
+                $profilesCount = $this->getUserService()->searchUserProfileCount(array('truename' => $conditions['keyword']));
+                $userProfiles  = $this->getUserService()->searchUserProfiles(
+                    array('truename' => $conditions['keyword']),
+                    array('id', 'DESC'),
+                    0,
+                    $profilesCount
+                );
+            }
             $userIds       = ArrayToolkit::column($userProfiles, 'id');
 
             if (!empty($userIds)) {
