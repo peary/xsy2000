@@ -20,18 +20,28 @@ define(function(require, exports, module) {
         },
 
         createValidator: function() {
+            var self = this;
             var validator = new Validator({
                 element: this.element,
                 failSilently: true,
                 onFormValidated: function(error, results, $form) {
                     if (error) {
-                        return false;
+                        var flag = false;
+                        if('[name="truename"]' == results[0][2].selector && results[0][0] == null){
+                            if($('input[name="truename"]').val() != ''){
+                                flag = true;
+                            }
+                        }
+                        if(flag == false){
+                            return false;
+                        }
                     }
                     //检查数据
-                    if(editObj.onValidata() == false) {
+                    if(self.editObj.onValidata() == false) {
                         return false;
                     }
                     this.element.find('[type=submit]').button('submiting').addClass('disabled');
+                    return true;
                 }
             });
 
@@ -131,12 +141,10 @@ define(function(require, exports, module) {
             }
 
             //初始化对象
-            var editObj = new Create();
+            this.editObj = new Create();
         }
         
     });
-
-    module.exports = UserInfoFieldsItemValidate;
 
     function Create() {
         this.init();
@@ -311,4 +319,5 @@ define(function(require, exports, module) {
         }
     };
 
+    module.exports = UserInfoFieldsItemValidate;
 });
