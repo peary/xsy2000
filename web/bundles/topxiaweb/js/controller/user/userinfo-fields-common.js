@@ -20,28 +20,14 @@ define(function(require, exports, module) {
         },
 
         createValidator: function() {
-            var self = this;
             var validator = new Validator({
                 element: this.element,
                 failSilently: true,
                 onFormValidated: function(error, results, $form) {
                     if (error) {
-                        var flag = false;
-                        if('[name="truename"]' == results[0][2].selector && results[0][0] == null){
-                            if($('input[name="truename"]').val() != ''){
-                                flag = true;
-                            }
-                        }
-                        if(flag == false){
-                            return false;
-                        }
-                    }
-                    //检查数据
-                    if(self.editObj.onValidata() == false) {
                         return false;
                     }
                     this.element.find('[type=submit]').button('submiting').addClass('disabled');
-                    return true;
                 }
             });
 
@@ -109,23 +95,23 @@ define(function(require, exports, module) {
                 required: true
             });
             for(var i=1;i<=5;i++){
-                 validator.addItem({
-                     element: '[name="intField'+i+'"]',
-                     required: true,
-                     rule: 'int'
-                 });
+                validator.addItem({
+                    element: '[name="intField'+i+'"]',
+                    required: true,
+                    rule: 'int'
+                });
 
-                  validator.addItem({
+                validator.addItem({
                     element: '[name="floatField'+i+'"]',
                     required: true,
                     rule: 'float'
-                 });
+                });
 
-                 validator.addItem({
+                validator.addItem({
                     element: '[name="dateField'+i+'"]',
                     required: true,
                     rule: 'date'
-                 });
+                });
             }
 
             for(var i=1;i<=10;i++){
@@ -143,7 +129,7 @@ define(function(require, exports, module) {
             //初始化对象
             this.editObj = new Create();
         }
-        
+
     });
 
     function Create() {
@@ -171,17 +157,21 @@ define(function(require, exports, module) {
                     pare.next().show();
                     $('#varcharField1').closest('.form-group').hide();
                     $('#varcharField1_ext').closest('.form-group').show();
+                    $('#varcharField1').val($('#varcharField1_ext').val());
                 }
                 else if(id == 'varcharField1'){
                     $('#varcharField5').closest('.form-group').hide();
                     $('#varcharField5_ext').closest('.form-group').show();
                     pare.hide();
                     pare.next().show();
+                    $('#varcharField5').val($('#varcharField5_ext').val());
                 }
                 else {
                     pare.hide();
                     pare.next().show();
                 }
+                //赋值
+                $('#'+id).val($('#'+id+'_ext').val());
             });
 
             //联动操作
@@ -198,15 +188,16 @@ define(function(require, exports, module) {
                     arrs.push('<option value="'+subs[i].name+'">'+subs[i].name+'</option>');
                 }
                 $('#varcharField1_ext').html(arrs.join(''));
+                $('#varcharField5').val($('#varcharField5_ext').val());
             });
 
-            //提交
-            //$('#user-edit-btn').on('click', function(){
-            //    console.log(1);
-            //    if(self.onValidata()){
-            //        $('#user-edit-form').submit();
-            //    }
-            //});
+            //联动操作
+            $('#varcharField1_ext,#varcharField6_ext,#varcharField2_ext').on('change', function(){
+                var id = $(this).attr('id');
+                var oid = id.replace('_ext','');
+                console.log(oid+','+$(this).val());
+                $('#'+oid).val($(this).val());
+            });
         },
         onValidata: function (){
             //填充数据
@@ -224,16 +215,20 @@ define(function(require, exports, module) {
             }
 
             if($('#varcharField5').val() == ''){
-                alert('请选择就读市/区'); return false;
+                //alert('请选择就读市/区');
+                return false;
             }
             if($('#varcharField1').val() == ''){
-                alert('请选择就读学校'); return false;
+                //alert('请选择就读学校');
+                return false;
             }
             if($('#varcharField6').val() == ''){
-                alert('请选择所在年级'); return false;
+                //alert('请选择所在年级');
+                return false;
             }
             if($('#varcharField2').val() == ''){
-                alert('请选择所在班级'); return false;
+                //alert('请选择所在班级');
+                return false;
             }
 
             return true;
