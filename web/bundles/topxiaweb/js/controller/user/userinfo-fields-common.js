@@ -142,7 +142,7 @@ define(function(require, exports, module) {
             this.gradeLevel = [
                 '七年级','八年级','九年级'
             ];
-            this.classLevel = 50;
+            this.classLevel = 30;
             this.loadData();
             this.addDom();
             this.addEvents();
