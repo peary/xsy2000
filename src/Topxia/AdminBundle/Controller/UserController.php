@@ -180,26 +180,22 @@ class UserController extends BaseController
 
             //移动文件
             //$newfile = $_SERVER['DOCUMENT_ROOT'].'/files/tmp/'.md5($_FILES["uploadcsv"]["name"]).'.csv';
-            $newfile = $_FILES["uploadcsv"]["tmp_name"];
+            $orifile = $_FILES["uploadcsv"]["tmp_name"];
+            $newfile = $orifile.'.utf8';
+            $cmd = 'iconv ' . $orifile . ' -f gbk -t utf8 > '. $newfile;
+            system($cmd);
             $orginals = array();
 
             $file = fopen($newfile,'r');
             $i = 0; $flag = true;
-            while ($data = fgetcsv($file)) {
-                foreach($data as $k=>$v){
-                    $data[$k] = @iconv('gbk','utf-8',$v);
-                }
-                //$data = eval('return '.iconv('gbk','utf-8',var_export($data,true)).';');
-                if(count($data) != 4){
-                    $flag = false;
-                    break;
-                }
-                if($i > 0){
-                    $orginals[] = $data;
-                }
+            while (!feof($file)) {
+                $line = fgets($file);
+                $data = explode(',', $line);
                 if($i > 500){
                     $flag = false;
                     break;
+                } else if($i > 0 && count($data) >= 4) {
+                    $orginals[] = $data;
                 }
                 $i++;
             }
