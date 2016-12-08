@@ -279,7 +279,7 @@
 	  {% endif %}
 
       {# 学员动态 #}
-      {% set statuses = data('LatestStatuses', {mode:'simple', count: 5,private:0}) %}
+      {% set statuses = data('LatestStatuses', {mode:'simple', count: 20, private:0}) %}
       {% if statuses %}
         <div class="panel es-box status-side">
           <h2 class="panel-title">{% if setting('default.user_name') %}{{setting('default.user_name')|default('学员')}}{% else %}学员{% endif %}动态</h2>
