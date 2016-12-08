@@ -260,6 +260,14 @@
 	            <input type="hidden" name="_csrf_token" value="{{ csrf_token('site') }}">
 	          </form>
             </div>
+            {% if setting('login_bind.enabled') %}
+                <div class="social-login">
+                <span>
+                  {{ render(controller('TopxiaWebBundle:Login:oauth2LoginsBlock', {targetPath:_target_path})) }}
+                </span>
+                <div class="line"></div>
+                </div>
+            {% endif %}
             {% endif %}
         </div>  
       {# 账号登录 #}
