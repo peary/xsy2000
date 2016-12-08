@@ -184,6 +184,7 @@ userKeyWordType:
     verifiedMobile: 手机号
     email: 邮件地址
     loginIp: 登录IP
+    truename: 用户姓名
 
 jobCycle:
     once: 一次
