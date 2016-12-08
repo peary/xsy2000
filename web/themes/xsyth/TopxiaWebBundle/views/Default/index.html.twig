@@ -285,16 +285,18 @@
           <h2 class="panel-title">{% if setting('default.user_name') %}{{setting('default.user_name')|default('学员')}}{% else %}学员{% endif %}动态</h2>
           <div class="panel-body">
             <ul class="media-list">
-            {% for status in statuses %}    
-              <li class="media">
-              <div class="media-left">
-                {{ web_macro.user_avatar(status.user, '','avatar-sm',true) }}
-              </div>
-              <div class="media-body media-middle">
-              {{ web_macro.user_link(status.user) }}
-              {{ status.message|raw }}
-              </div>
-            </li>
+            {% for status in statuses %}
+              {% if status.objectType == 'classroom' %}
+                  <li class="media">
+                  <div class="media-left">
+                    {{ web_macro.user_avatar(status.user, '','avatar-sm',true) }}
+                  </div>
+                  <div class="media-body media-middle">
+                  {{ web_macro.user_link(status.user) }}
+                  {{ status.message|raw }}
+                  </div>
+                </li>
+              {% endif %}
             {% endfor %}
             </ul>
           </div>
