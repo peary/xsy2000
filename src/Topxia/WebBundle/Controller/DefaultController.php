@@ -12,12 +12,13 @@ class DefaultController extends BaseController
     {
         $user = $this->getCurrentUser();
 
-        if (!empty($user['id'])) {
+        if (empty($user['id'])) {
+            return $this->redirect($this->generateUrl('login'));
+        } else {
             $this->getBatchNotificationService()->checkoutBatchNotification($user['id']);
+            $friendlyLinks = $this->getNavigationService()->getOpenedNavigationsTreeByType('friendlyLink');
+            return $this->render('TopxiaWebBundle:Default:index.html.twig', array('friendlyLinks' => $friendlyLinks));
         }
-
-        $friendlyLinks = $this->getNavigationService()->getOpenedNavigationsTreeByType('friendlyLink');
-        return $this->render('TopxiaWebBundle:Default:index.html.twig', array('friendlyLinks' => $friendlyLinks));
     }
 
     public function userlearningAction()
