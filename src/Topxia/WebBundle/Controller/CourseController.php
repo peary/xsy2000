@@ -337,6 +337,11 @@ class CourseController extends CourseBaseController
 
     public function showAction(Request $request, $id)
     {
+        $user   = $this->getCurrentUser();
+        if (empty($user['id'])) {
+            return $this->redirect($this->generateUrl('login'));
+        }
+
         list($course, $member) = $this->buildCourseLayoutData($request, $id);
 
         if ($course['parentId']) {

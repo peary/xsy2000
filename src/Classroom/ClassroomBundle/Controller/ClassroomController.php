@@ -272,6 +272,9 @@ class ClassroomController extends BaseController
         $currentUser = $this->getUserService()->getCurrentUser();
 
         $user = $this->getCurrentUser();
+        if (empty($user['id'])) {
+            return $this->redirect($this->generateUrl('login'));
+        }
 
         $member = $user ? $this->getClassroomService()->getClassroomMember($classroom['id'], $user['id']) : null;
 
@@ -347,6 +350,10 @@ class ClassroomController extends BaseController
         $introduction = $classroom['about'];
         $user         = $this->getCurrentUser();
         $member       = $user ? $this->getClassroomService()->getClassroomMember($classroom['id'], $user['id']) : null;
+
+        if (empty($user['id'])) {
+            return $this->redirect($this->generateUrl('login'));
+        }
 
         if (!$this->getClassroomService()->canLookClassroom($classroom['id'])) {
             return $this->createMessageResponse('info', "非常抱歉，您无权限访问该{$classroom['title']}，如有需要请联系客服", '', 3, $this->generateUrl('homepage'));
