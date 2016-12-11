@@ -16,9 +16,9 @@ define(function(require, exports, module) {
 
         setup: function() {
         	
-            var techOrder = ['flash','html5'];
+            var techOrder = ['html5'];
             if(this.get("agentInWhiteList")) {
-                techOrder = ['html5', 'flash'];
+                techOrder = ['html5'];
             }
 
     		var that = this;
