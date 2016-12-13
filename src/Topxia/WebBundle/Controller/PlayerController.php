@@ -309,7 +309,12 @@ class PlayerController extends BaseController
 
         $token = $this->getTokenService()->verifyToken('local.media', $token);
         if (!$token || $token['userId'] != $this->getCurrentUser()->getId()) {
-            throw $this->createAccessDeniedException();
+            $user_agent = $request->headers->get("user-agent");
+            if(strpos($user_agent, 'iPhone')||strpos($user_agent, 'iPad')||strpos($user_agent, 'ios')||strpos($user_agent, 'Android')||strpos($user_agent, 'MicroMessenger')){
+                //直接跳过
+            } else {
+                throw $this->createAccessDeniedException();
+            }
         }
 
         $response = BinaryFileResponse::create($file['fullpath'], 200, array(), false);
