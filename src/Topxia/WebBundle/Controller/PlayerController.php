@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Topxia\Service\CloudPlatform\CloudAPIFactory;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Topxia\Service\Common\ServiceKernel;
 
 class PlayerController extends BaseController
 {
@@ -273,11 +274,10 @@ class PlayerController extends BaseController
     protected function makeToken($type, $fileId, $context = array())
     {
         $fileds = array(
-
             'data'     => array(
                 'id' => $fileId
             ),
-            'times'    => 3,
+            'times'    => 20,
             'duration' => 3600,
             'userId'   => $this->getCurrentUser()->getId()
         );
@@ -298,7 +298,7 @@ class PlayerController extends BaseController
     public function localMediaAction(Request $request, $id, $token)
     {
         $file = $this->getUploadFileService()->getFile($id);
-
+        //ServiceKernel::instance()->createService("System.LogService")->info('player', 'playermedia1', json_encode($file));
         if (empty($file)) {
             throw $this->createNotFoundException();
         }
@@ -306,9 +306,11 @@ class PlayerController extends BaseController
         if (!in_array($file["type"], array("audio", "video"))) {
             throw $this->createAccessDeniedException();
         }
-
+        //ServiceKernel::instance()->createService("System.LogService")->info('player', 'playermedia2', $token);
         $token = $this->getTokenService()->verifyToken('local.media', $token);
+        //ServiceKernel::instance()->createService("System.LogService")->info('player', 'playermedia3', json_encode($token));
         if (!$token || $token['userId'] != $this->getCurrentUser()->getId()) {
+            //ServiceKernel::instance()->createService("System.LogService")->info('player', 'playermedia4', $this->getCurrentUser()->getId());
             $user_agent = $request->headers->get("user-agent");
             if(strpos($user_agent, 'iPhone')||strpos($user_agent, 'iPad')||strpos($user_agent, 'ios')||strpos($user_agent, 'Android')||strpos($user_agent, 'MicroMessenger')){
                 //直接跳过
@@ -316,7 +318,7 @@ class PlayerController extends BaseController
                 throw $this->createAccessDeniedException();
             }
         }
-
+        //ServiceKernel::instance()->createService("System.LogService")->info('player', 'playermedia5', $file['fullpath']);
         $response = BinaryFileResponse::create($file['fullpath'], 200, array(), false);
         $response->trustXSendfileTypeHeader();
 
