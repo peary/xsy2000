@@ -21,7 +21,7 @@
         <div class="alert alert-danger">正在转码，请稍后尝试。</div>
       {% else %}
         <div style="position:absolute;top:0;bottom:0;left:0;right:0;text-align:center;">
-          <div id="lesson-video-content"
+          <div id="lesson-video-content" oncontextmenu="return false"
           data-user-id="{{app.user.id|default(0)}}"
           data-file-id="{{file.id}}"
           data-file-type="{{file.type}}"
