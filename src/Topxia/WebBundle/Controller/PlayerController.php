@@ -318,7 +318,6 @@ class PlayerController extends BaseController
                 throw $this->createAccessDeniedException();
             }
         }
-        //ServiceKernel::instance()->createService("System.LogService")->info('player', 'playermedia5', $file['fullpath']);
         $response = BinaryFileResponse::create($file['fullpath'], 200, array(), false);
         $response->trustXSendfileTypeHeader();
 
