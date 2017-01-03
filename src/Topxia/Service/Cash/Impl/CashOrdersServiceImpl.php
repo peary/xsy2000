@@ -4,6 +4,7 @@ namespace Topxia\Service\Cash\Impl;
 use Topxia\Service\Common\BaseService;
 use Topxia\Service\Common\ServiceEvent;
 use Topxia\Service\Cash\CashOrdersService;
+use Topxia\Common\ArrayToolkit;
 
 class CashOrdersServiceImpl extends BaseService implements CashOrdersService
 {
@@ -24,6 +25,33 @@ class CashOrdersServiceImpl extends BaseService implements CashOrdersService
         $order['sn']          = "O".date('YmdHis').rand(10000, 99999);
         $order['status']      = "created";
         $order['title']       = "充值购买".$coin.$coinSetting['coin_name'];
+        $order['createdTime'] = time();
+
+        return $this->getOrderDao()->addOrder($order);
+    }
+
+    public function addNewOrder($order)
+    {
+        if(!ArrayToolkit::requireds($order, array(
+            'userId', 'amount', 'targetType', 'targetId', 'note'
+        ))){
+            throw $this->createServiceException('参数缺失');
+        }
+
+        $coinSetting = $this->getSettingService()->get('coin', array());
+
+        if (!is_numeric($order['amount'])) {
+            throw $this->createServiceException($coinSetting['coin_name'].'必须为整数!');
+        }
+
+        //检查类型
+        if(!in_array($order['targetType'], array('coin', 'course_thread'))){
+            throw $this->createServiceException('订单类型异常');
+        }
+
+        $order['sn']          = "CT".date('YmdHis').rand(10000, 99999);
+        $order['status']      = "created";
+        $order['title']       = "悬赏消费".$order['amount'].$coinSetting['coin_name'];
         $order['createdTime'] = time();
 
         return $this->getOrderDao()->addOrder($order);

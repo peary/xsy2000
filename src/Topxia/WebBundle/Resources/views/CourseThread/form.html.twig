@@ -21,7 +21,7 @@
 </ul>
 
 
-<form id="thread-form" class="form-vertical" method="post"
+<form id="thread-form" data-type="{{ type }}" data-thread="{% if thread %}edit{% endif %}" class="form-vertical" method="post"
   {% if thread %}
     action="{{ path('course_thread_edit', {courseId:course.id, id:thread.id}) }}"
   {% else %}
@@ -35,6 +35,34 @@
       {{ form_widget(form.title, {attr:{class:'form-control', placeholder:placeholder, 'data-display':'标题'|trans}}) }}
     </div>
   </div>
+
+    {% if thread %}
+        {% if thread.extType=='1' %}
+        <div class="form-group">
+            <div class="help-block">悬赏金额：{{ thread.virtualAmount }}{{ coinSetting.coin_name }}</div>
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="form-group" style="display:none">
+            <div class="controls">
+                {% if thread %}
+                    {% set extType = thread.extType=='1'?1:0 %}
+                {% else %}
+                    {% set extType = 0 %}
+                {% endif %}
+                <label><input type="radio" name="thread[extType]" value="0" {% if extType == 0 %}checked="checked"{% endif %}> 不悬赏</label>
+                <label><input type="radio" name="thread[extType]" value="1" {% if extType == 1 %}checked="checked"{% endif %}> 悬赏</label>
+                <div class="help-block">{{'选择悬赏将会扣除部分账户余额。'|trans}}</div>
+            </div>
+        </div>
+        <div class="form-group" style="display:{% if extType==0 %}none{% endif %}">
+            <div class="controls">
+                {{ form_widget(form.virtualAmount, {attr:{class:'form-control', 'style':'width:20%', placeholder:"请填写悬赏金额，只能为整数", 'data-display':'悬赏金额'|trans}}) }}
+                <div class="help-block" style="display:none;"></div>
+            </div>
+            <div class="help-block">(账户余额:{{ account.cash }}{{ coinSetting.coin_name }})</div>
+        </div>
+    {% endif %}
 
   <div class="form-group">
     <div class="controls">

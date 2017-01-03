@@ -45,11 +45,14 @@ class CourseThreadController extends CourseBaseController
         );
         $users = $this->getUserService()->findUsersByIds($userIds);
 
+        $coinSetting = $this->getSettingService()->get('coin');
+
         return $this->render("TopxiaWebBundle:CourseThread:index.html.twig", array(
             'course'    => $course,
             'member'    => $member,
             'threads'   => $threads,
             'users'     => $users,
+            'coinSetting'=>$coinSetting,
             'paginator' => $paginator,
             'filters'   => $filters,
             'lessons'   => $lessons,
@@ -74,6 +77,9 @@ class CourseThreadController extends CourseBaseController
         }
 
         $user = $this->getCurrentUser();
+
+        //获取新币汇率
+        $coinSetting = $this->getSettingService()->get('coin');
 
         if ($member && !$this->getCourseService()->isMemberNonExpired($course, $member)) {
             $isMemberNonExpired = false;
@@ -123,6 +129,7 @@ class CourseThreadController extends CourseBaseController
             'posts'              => $posts,
             'elitePosts'         => $elitePosts,
             'users'              => $users,
+            'coinSetting'        =>$coinSetting,
             'isManager'          => $isManager,
             'isMemberNonExpired' => $isMemberNonExpired,
             'paginator'          => $paginator
@@ -132,6 +139,16 @@ class CourseThreadController extends CourseBaseController
     public function createAction(Request $request, $id)
     {
         list($course, $member, $response) = $this->buildLayoutDataWithTakenAccess($request, $id);
+
+        $user = $this->getCurrentUser();
+        //获取用户现金账户
+        $account = $this->getCashAccountService()->getAccountByUserId($user->id, true);
+        if(empty($account)){
+            $account['cash'] = 0;
+        }
+
+        //获取新币汇率
+        $coinSetting = $this->getSettingService()->get('coin');
 
         if ($response) {
             return $response;
@@ -151,16 +168,82 @@ class CourseThreadController extends CourseBaseController
         $form = $this->createThreadForm(array(
             'type'     => $type,
             'courseId' => $course['id']
-        ));
+        ), false);
 
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             $formData = $request->request->all();
-            if ($form->isValid()) {
+            $formData = $formData['thread'];
+            //验证虚拟币
+            if($type == 'question' && $formData['extType'] == 1 && $formData['virtualAmount']>$account['cash']){
+                return $this->redirect($this->generateUrl('course_thread_create', array('id' => $id,'type'=>$type)));
+            }
+
+            //if ($form->isValid()) {
                 try {
-                    $thread     = $this->getThreadService()->createThread($form->getData());
+                    $rdata = $form->getData();
+                    if(isset($formData['extType']) && $formData['extType'] == 1){
+                        $rdata['extType'] = $formData['extType'];
+                        $rdata['virtualAmount'] = $formData['virtualAmount'];
+                    } else {
+                        $rdata['extType'] = 0;
+                        $rdata['virtualAmount'] = 0;
+                    }
+
+                    $thread     = $this->getThreadService()->createThread($rdata);
                     $attachment = $request->request->get('attachment');
                     $this->getUploadFileService()->createUseFiles($attachment['fileIds'], $thread['id'], $attachment['targetType'], $attachment['type']);
+
+                    //如果添加成功，则添加消费记录
+                    if(isset($thread['id']) && isset($thread['extType']) && $thread['extType'] == 1){
+//                       //添加消费订单
+//                       $order = array(
+//                           'userId'=>$user->id,
+//                           'title'=>'悬赏消费-'.$formData['title'],
+//                           'amount'=>$formData['virtualAmount'],
+//                           'targetType'=>'course_thread',
+//                           'targetId'=>$thread['id'],
+//                           'payment'=>'coin',
+//                           'note'=>'',
+//                           'snPrefix'=>'CT',
+//                           'data'=>'',
+//                           'couponCode'=>'',
+//                           'coinAmount'=>$formData['virtualAmount'],
+//                           'coinRate'=>$coinSetting['cash_rate'],
+//                           'priceType'=>'Coin',
+//                           'totalPrice'=>$formData['virtualAmount'],
+//                           'coupon'=>'',
+//                           'couponDiscount'=>'0.00',
+//                           'discountId'=>'',
+//                           'discount'=>'0.00'
+//                       );
+//                       $orderinfo = $this->getOrderService()->createOrder($order);
+                       //添加消费订单
+                       $order = array(
+                           'userId'=>$user->id,
+                           'amount'=>$formData['virtualAmount'],
+                           'targetType'=>'course_thread',
+                           'targetId'=>$thread['id'],
+                           'payment'=>'none',
+                           'note'=>''
+                       );
+                       $orderinfo = $this->getCashOrdersService()->addNewOrder($order);
+                       if(isset($orderinfo['id'])){
+                           //添加消费记录
+                           $outflow = array(
+                               'userId'=>$user->id,
+                               'amount'=>$formData['virtualAmount'],
+                               'name'=>'悬赏消费-'.$formData['title'],
+                               'orderSn'=>$orderinfo['sn'],
+                               'category'=>'outflow',
+                               'note'=>''
+                           );
+                           $flow = $this->getCashService()->outflowByCoin($outflow);
+                           if(isset($flow['id'])){
+                               $this->getCashOrdersService()->updateOrder($orderinfo['id'], array('status'=>'paid','payment'=>'coin', 'paidTime'=>time()));
+                           }
+                       }
+                    }
 
                     return $this->redirect($this->generateUrl('course_thread_show', array(
                         'courseId' => $thread['courseId'],
@@ -169,12 +252,14 @@ class CourseThreadController extends CourseBaseController
                 } catch (\Exception $e) {
                     return $this->createMessageResponse('error', $e->getMessage(), '错误提示', 1, $request->getPathInfo());
                 }
-            }
+            //}
         }
 
         return $this->render("TopxiaWebBundle:CourseThread:form.html.twig", array(
             'course' => $course,
             'member' => $member,
+            'account'=> $account,
+            'coinSetting'=>$coinSetting,
             'form'   => $form->createView(),
             'type'   => $type
         ));
@@ -183,6 +268,16 @@ class CourseThreadController extends CourseBaseController
     public function editAction(Request $request, $courseId, $id)
     {
         list($course, $member, $response) = $this->buildLayoutDataWithTakenAccess($request, $courseId);
+
+        $user = $this->getCurrentUser();
+        //获取用户现金账户
+        $account = $this->getCashAccountService()->getAccountByUserId($user->id, true);
+        if(empty($account)){
+            $account['cash'] = 0;
+        }
+
+        //获取新币汇率
+        $coinSetting = $this->getSettingService()->get('coin');
 
         if ($response) {
             return $response;
@@ -193,8 +288,6 @@ class CourseThreadController extends CourseBaseController
         if (empty($thread)) {
             throw $this->createNotFoundException();
         }
-
-        $user = $this->getCurrentUser();
 
         if ($user->isLogin() && $user->id == $thread['userId']) {
             $course = $this->getCourseService()->getCourse($courseId);
@@ -241,19 +334,31 @@ class CourseThreadController extends CourseBaseController
             'form'   => $form->createView(),
             'course' => $course,
             'member' => $member,
+            'account'=> $account,
+            'coinSetting'=>$coinSetting,
             'thread' => $thread,
             'type'   => $thread['type']
         ));
     }
 
-    protected function createThreadForm($data = array())
+    protected function createThreadForm($data = array(),$flag=true)
     {
-        return $this->createNamedFormBuilder('thread', $data)
-            ->add('title', 'text')
-            ->add('content', 'textarea')
-            ->add('type', 'hidden')
-            ->add('courseId', 'hidden')
-            ->getForm();
+        if($flag){
+            return $this->createNamedFormBuilder('thread', $data)
+                ->add('title', 'text')
+                ->add('content', 'textarea')
+                ->add('type', 'hidden')
+                ->add('courseId', 'hidden')
+                ->getForm();
+        } else {
+            return $this->createNamedFormBuilder('thread', $data)
+                ->add('title', 'text')
+                ->add('content', 'textarea')
+                ->add('virtualAmount', 'number')
+                ->add('type', 'hidden')
+                ->add('courseId', 'hidden')
+                ->getForm();
+        }
     }
 
     public function deleteAction(Request $request, $courseId, $id)
@@ -261,7 +366,6 @@ class CourseThreadController extends CourseBaseController
         $thread = $this->getThreadService()->getThread($courseId, $id);
         $this->getThreadService()->deleteThread($id);
         $user = $this->getCurrentUser();
-
         if ($user->isAdmin()) {
             $threadUrl = $this->generateUrl('course_thread_show', array('courseId' => $courseId, 'threadId' => $id), true);
             $message   = array(
@@ -273,6 +377,31 @@ class CourseThreadController extends CourseBaseController
             );
 
             $this->getNotifiactionService()->notify($thread['userId'], 'course-thread', $message);
+
+            //修改订单状态
+            if($thread['extType'] == 1){
+                $conditions['userId'] = $thread['userId'];
+                $conditions['targetType'] = 'course_thread';
+                $conditions['targetId'] = $id;
+                $orders  = $this->getCashOrdersService()->searchOrders($conditions, array('createdTime', 'DESC'), 0, 1);
+                if(!empty($orders)){
+                    $order = $orders[0];
+
+                    //修改订单状态
+                    $this->getCashOrdersService()->updateOrder($order['id'], array('status'=>'cancelled'));
+
+                    //资金原路退回
+                    $inflow = array(
+                        'userId'=>$order['userId'],
+                        'amount'=>$order['amount'],
+                        'name'=>'退款'.$order['title'],
+                        'orderSn'=>$order['sn'],
+                        'category'=>'inflow',
+                        'note'=>''
+                    );
+                    $this->getCashService()->inflowByCoin($inflow);
+                }
+            }
         }
 
         return $this->createJsonResponse(true);
@@ -614,6 +743,19 @@ class CourseThreadController extends CourseBaseController
 
         return $conditions;
     }
+    protected function getCashService()
+    {
+        return $this->getServiceKernel()->createService('Cash.CashService');
+    }
+    protected function getCashOrdersService()
+    {
+        return $this->getServiceKernel()->createService('Cash.CashOrdersService');
+    }
+
+    protected function getCashAccountService()
+    {
+        return $this->getServiceKernel()->createService('Cash.CashAccountService');
+    }
 
     protected function getNotifiactionService()
     {
@@ -633,6 +775,10 @@ class CourseThreadController extends CourseBaseController
     protected function getSettingService()
     {
         return $this->getServiceKernel()->createService('System.SettingService');
+    }
+    protected function getOrderService()
+    {
+        return $this->getServiceKernel()->createService('Order.OrderService');
     }
 
     protected function getUploadFileService()

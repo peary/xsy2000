@@ -6,6 +6,9 @@
     <div class="title">
       {% if thread.type == 'question'%}
         <i class="es-icon es-icon-help color-danger" data-toggle="tooltip" data-placement="top" title="问答"></i>
+        {% if thread.extType == '1'%}
+        <i class="es-icon es-icon-money color-success" data-toggle="tooltip" data-placement="top" title="悬赏{{ thread.virtualAmount }}"></i>
+        {% endif %}
       {% endif %}
       {% if thread.type == 'event'%}
         <i class="es-icon es-icon-locationcircle color-primary" data-toggle="tooltip" data-placement="top" title="活动"></i>
@@ -14,7 +17,8 @@
       {% if thread.type == 'discussion' %}   
         <i class="es-icon es-icon-chatcircle color-info" data-toggle="tooltip" data-placement="top" title="话题"></i>
       {% endif %}
-      <a  href="{{ path(target.type ~ '_thread_show', {(target.type ~ 'Id'): target.id, threadId:thread.id}) }}">{{ thread.title }}
+      <a  href="{{ path(target.type ~ '_thread_show', {(target.type ~ 'Id'): target.id, threadId:thread.id}) }}">
+          {{ thread.title }}
       </a>
       
       {% if thread.sticky %}

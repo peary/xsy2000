@@ -5,6 +5,8 @@ interface CashOrdersService
 {
     public function addOrder($order);
 
+    public function addNewOrder($order);
+
     public function getOrder($id);
 
     public function getOrderBySn($sn, $lock = false);

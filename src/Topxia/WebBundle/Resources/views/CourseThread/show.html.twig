@@ -21,6 +21,9 @@
         <span class="label label-info">{{'问'|trans}}</span>
         {% endif %}
         {{ thread.title }}
+        {% if thread.extType == '1' %}
+          <span class="label label-blue">悬赏{{thread.virtualAmount|trans}}{{ coinSetting.coin_name }}</span>
+        {% endif %}
       </h2>
       <div class="thread-metas">
         By {{  web_macro.user_link(author, 'link-muted') }}
