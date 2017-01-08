@@ -624,6 +624,10 @@ course_thread_post_edit:
     pattern:  /course/{courseId}/thread/{threadId}/post/{id}/edit
     defaults: { _controller: TopxiaWebBundle:CourseThread:editPost }
 
+course_thread_set_answer:
+    pattern:  /course/{courseId}/thread/{threadId}/post/{id}/setAnswer
+    defaults: { _controller: TopxiaWebBundle:CourseThread:setAnswer }
+
 course_thread_stick:
     pattern:  /course/{courseId}/thread/{id}/stick
     defaults: { _controller: TopxiaWebBundle:CourseThread:stick }

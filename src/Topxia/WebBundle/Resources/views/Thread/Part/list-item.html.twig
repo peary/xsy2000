@@ -27,6 +27,11 @@
       {% if thread.nice %}
         <span class="label label-danger" title="精华帖">精华</span>
       {% endif %}
+      {% if thread.type == 'question' and thread.extType == 1 %}
+          {% if thread.isFinish == 1 %}
+            <span class="label label-blue" title="已解决">已解决</span>
+          {% endif %}
+      {% endif %}
     </div>
     
     <div class="metas text-sm">

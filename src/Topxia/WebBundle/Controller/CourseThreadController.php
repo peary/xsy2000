@@ -341,6 +341,53 @@ class CourseThreadController extends CourseBaseController
         ));
     }
 
+    public function setAnswerAction(Request $request, $courseId, $threadId, $id){
+        //get thread
+        $thread = $this->getThreadService()->getThread($courseId, $threadId);
+
+        //get thread post
+        $post = $this->getThreadService()->getPost($courseId, $id);
+
+        if(empty($thread) || empty($post)){
+            return $this->createMessageResponse('info', "非常抱歉，问题或者答案已被删除", '', 3, $this->generateUrl('course_thread_show', array(
+                'courseId' => $thread['courseId'],
+                'threadId' => $thread['id']
+            )));
+        }
+
+        if($thread['extType'] == 1 && $thread['userId'] != $post['userId']){
+            if($thread['virtualAmount']>0 && (empty($thread['postId']) || $thread['postId'] == 0) ){
+                //获取原始订单信息
+                $conditions['userId'] = $thread['userId'];
+                $conditions['targetType'] = 'course_thread';
+                $conditions['targetId'] = $threadId;
+                $orders  = $this->getCashOrdersService()->searchOrders($conditions, array('createdTime', 'DESC'), 0, 1);
+                if(!empty($orders)){
+                    $order = $orders[0];
+
+                    //资金放入问答用户账户
+                    $inflow = array(
+                        'userId'=>$post['userId'],
+                        'amount'=>$order['amount'],
+                        'name'=>'进账'.$thread['title'],
+                        'orderSn'=>$order['sn'],
+                        'category'=>'inflow',
+                        'note'=>''
+                    );
+                    $this->getCashService()->inflowByCoin($inflow);
+
+                    //更新标准答案
+                    $this->getThreadService()->finishThread($thread['courseId'], $thread['id'], array('postId'=>$id,'isFinish'=>1));
+                }
+            }
+        }
+
+        return $this->redirect($this->generateUrl('course_thread_show', array(
+            'courseId' => $thread['courseId'],
+            'threadId' => $thread['id']
+        )));
+    }
+
     protected function createThreadForm($data = array(),$flag=true)
     {
         if($flag){

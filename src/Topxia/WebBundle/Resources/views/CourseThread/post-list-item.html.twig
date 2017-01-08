@@ -2,7 +2,7 @@
 <li id="post-{{ post.id }}" class="thread-post media clearfix">
   {{ web_macro.user_avatar(author, 'pull-left media-object') }}
 
-  {% if isManager or app.user.id == author.id or app.user.id == thread.userId%}
+  {% if isManager or app.user.id == author.id or (app.user.id == thread.userId and app.user.id != author.id and thread.extType == 1 and thread.postId == 0) %}
   <div class="thread-post-dropdown">
     <a href="javascript:" class="dropdown-toggle text-muted" data-toggle="dropdown"><i class="glyphicon glyphicon-collapse-down"></i></a>
     <ul class="dropdown-menu pull-right">
@@ -13,8 +13,8 @@
       {% if app.user.id == author.id %}
         <li><a href="{{ path('course_thread_post_edit', {courseId:course.id,threadId:thread.id, id:post.id}) }}"><i class="glyphicon glyphicon-edit"></i> {{'编辑'|trans}}</a></li>
       {% endif %}
-      {% if app.user.id == thread.userId and app.user.id != author.id %}
-        <li><a href="javascript:;"><i class="glyphicon glyphicon-edit"></i> {{'设置为标准答案'|trans}}</a></li>
+      {% if app.user.id == thread.userId and app.user.id != author.id and thread.extType == 1 and thread.postId == 0 %}
+        <li><a href="{{ path('course_thread_set_answer', {courseId:course.id,threadId:thread.id, id:post.id}) }}"><i class="glyphicon glyphicon-edit"></i> {{'设置为标准答案'|trans}}</a></li>
       {% endif %}
     </ul>
   </div>
@@ -25,6 +25,9 @@
       <a href="javascript:">{{ author.nickname }}</a>
       <span class="bullet">•</span>
       <span class="text-muted">{{ post.createdTime|smart_time }}</span>
+      {% if thread.postId == post.id %}
+        <span class="label label-blue">标准答案</span>
+      {% endif %}
     </div>
     <div class="editor-text">{{ post.content|raw }}</div>
     {% include 'TopxiaWebBundle:Attachment/Widget:list.html.twig' with {targetType:'course.thread.post', targetId:post.id|default(0)} %}

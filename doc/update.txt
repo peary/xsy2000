@@ -10,3 +10,5 @@ insert into `block` (`id`, `userId`, `blockTemplateId`, `orgId`, `content`, `cod
 ALTER TABLE `course_thread` ADD COLUMN `extType` TINYINT(1) DEFAULT 0 NULL COMMENT '1悬赏 0不悬赏' AFTER `type`;
 ALTER TABLE `course_thread` ADD COLUMN `virtualAmount` INT DEFAULT 0 NULL COMMENT '悬赏金额' AFTER `extType`;
 ALTER TABLE `cash_orders` ADD COLUMN `targetId` INT(11) DEFAULT 0 NULL COMMENT '订单所属对象ID' AFTER `targetType`;
+ALTER TABLE `course_thread` ADD COLUMN `postId` INT(11) DEFAULT 0 NULL COMMENT '标准答案id' AFTER `virtualAmount`;
+ALTER TABLE `course_thread` ADD COLUMN `isFinish` TINYINT(1) DEFAULT 0 NULL COMMENT '0默认 已完成 2取消' AFTER `postId`;
