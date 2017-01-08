@@ -369,7 +369,7 @@ class CourseThreadController extends CourseBaseController
                     $inflow = array(
                         'userId'=>$post['userId'],
                         'amount'=>$order['amount'],
-                        'name'=>'进账'.$thread['title'],
+                        'name'=>'进账悬赏问题'.$thread['title'],
                         'orderSn'=>$order['sn'],
                         'category'=>'inflow',
                         'note'=>''
