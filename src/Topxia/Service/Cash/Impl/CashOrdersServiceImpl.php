@@ -45,13 +45,22 @@ class CashOrdersServiceImpl extends BaseService implements CashOrdersService
         }
 
         //检查类型
-        if(!in_array($order['targetType'], array('coin', 'course_thread'))){
+        if(!in_array($order['targetType'], array('coin', 'course_thread','course_thread_wg'))){
             throw $this->createServiceException('订单类型异常');
         }
 
         $order['sn']          = "CT".date('YmdHis').rand(10000, 99999);
         $order['status']      = "created";
-        $order['title']       = "悬赏消费".$order['amount'].$coinSetting['coin_name'];
+        if($order['targetType'] == 'course_thread'){
+            $prev = "悬赏消费";
+        }
+        else if($order['targetType'] == 'course_thread_wg') {
+            $prev = "问答消费";
+        }
+        else {
+            $prev = "";
+        }
+        $order['title']       = $prev.$order['amount'].$coinSetting['coin_name'];
         $order['createdTime'] = time();
 
         return $this->getOrderDao()->addOrder($order);

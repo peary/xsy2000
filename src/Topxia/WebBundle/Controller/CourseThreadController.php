@@ -93,6 +93,19 @@ class CourseThreadController extends CourseBaseController
             throw $this->createNotFoundException("话题不存在，或已删除。");
         }
 
+        //检查是否可以查看答案
+        $conds = array(
+            'courseId'=>$courseId,
+            'threadId'=>$threadId,
+            'userId'=>$user->id
+        );
+        $wg = $this->getThreadService()->searchThreadWg($conds,'',0,1,'');
+        if(!empty($wg)){
+            $thread['isView'] = 1;
+        } else {
+            $thread['isView'] = 0;
+        }
+
         $paginator = new Paginator(
             $request,
             $this->getThreadService()->getThreadPostCount($course['id'], $thread['id']),
@@ -175,8 +188,22 @@ class CourseThreadController extends CourseBaseController
             $formData = $request->request->all();
             $formData = $formData['thread'];
             //验证虚拟币
-            if($type == 'question' && $formData['extType'] == 1 && $formData['virtualAmount']>$account['cash']){
-                return $this->redirect($this->generateUrl('course_thread_create', array('id' => $id,'type'=>$type)));
+            if($type == 'question' && $formData['extType'] == 1){
+                //验证账户余额
+                if($formData['virtualAmount']>$account['cash']){
+                    return $this->createMessageResponse('info', "非常抱歉，你的账户余额不足", '', 3, $this->generateUrl('course_thread_create', array(
+                        'id' => $id,
+                        'type'=>$type
+                    )));
+                }
+
+                //验证是否公开
+                if($formData['isPublic'] != 1 && (empty($formData['replyAmount']) || $formData['replyAmount']<1 || $formData['replyAmount']>$formData['virtualAmount'])){
+                    return $this->createMessageResponse('info', "非常抱歉，查看问题付费答案的金额不正确，请重新填写", '', 3, $this->generateUrl('course_thread_create', array(
+                        'id' => $id,
+                        'type'=>$type
+                    )));
+                }
             }
 
             //if ($form->isValid()) {
@@ -185,9 +212,18 @@ class CourseThreadController extends CourseBaseController
                     if(isset($formData['extType']) && $formData['extType'] == 1){
                         $rdata['extType'] = $formData['extType'];
                         $rdata['virtualAmount'] = $formData['virtualAmount'];
+                        if($formData['isPublic'] != 1){
+                            $rdata['isPublic'] = $formData['isPublic'];
+                            $rdata['replyAmount'] = $formData['replyAmount'];
+                        } else {
+                            $rdata['isPublic'] = 1;
+                            $rdata['replyAmount'] = 0;
+                        }
                     } else {
                         $rdata['extType'] = 0;
                         $rdata['virtualAmount'] = 0;
+                        $rdata['isPublic'] = 1;
+                        $rdata['replyAmount'] = 0;
                     }
 
                     $thread     = $this->getThreadService()->createThread($rdata);
@@ -388,6 +424,114 @@ class CourseThreadController extends CourseBaseController
         )));
     }
 
+    public function replyAmountAction(Request $request, $courseId, $threadId){
+        //get thread
+        $thread = $this->getThreadService()->getThread($courseId, $threadId);
+
+        $user = $this->getCurrentUser();
+        //获取用户现金账户
+        $account = $this->getCashAccountService()->getAccountByUserId($user->id, true);
+        if(empty($account)){
+            $account['cash'] = 0;
+        }
+
+        //获取新币汇率
+        $coinSetting = $this->getSettingService()->get('coin');
+
+        if ($request->getMethod() == 'POST') {
+            if($thread['replyAmount']<1 || $thread['userId'] == $user->id){
+                return $this->createMessageResponse('info', "非常抱歉，该问题设置异常", '', 3, $this->generateUrl('course_thread_show', array(
+                    'courseId'=>$courseId,
+                    'threadId'=>$threadId
+                )));
+            }
+
+            //检查是否可以查看答案
+            $conditions = array(
+                'courseId'=>$courseId,
+                'threadId'=>$threadId,
+                'userId'=>$user->id
+            );
+            $wg = $this->getThreadService()->searchThreadWg($conditions,'',1,1,'');
+            if(!empty($wg)){
+                return $this->redirect($this->generateUrl('course_thread_show', array(
+                    'courseId'=>$courseId,
+                    'threadId'=>$threadId
+                )));
+            }
+
+            //验证账户余额
+            if($thread['replyAmount']>$account['cash']){
+                return $this->createMessageResponse('info', "非常抱歉，你的账户余额不足", '', 3, $this->generateUrl('course_thread_show', array(
+                    'courseId'=>$courseId,
+                    'threadId'=>$threadId
+                )));
+            }
+
+            //插入记录
+            $data = $this->getThreadService()->createThreadWg(array(
+                'courseId'=>$courseId,
+                'threadId'=>$threadId,
+                'userId'=>$user->id
+            ));
+            if(!empty($data)){
+                //添加消费订单
+                $order = array(
+                    'userId'=>$user->id,
+                    'amount'=>$thread['replyAmount'],
+                    'targetType'=>'course_thread_wg',
+                    'targetId'=>$thread['id'],
+                    'payment'=>'none',
+                    'note'=>''
+                );
+                $orderinfo = $this->getCashOrdersService()->addNewOrder($order);
+                if(isset($orderinfo['id'])){
+                    //添加消费记录
+                    $outflow = array(
+                        'userId'=>$user->id,
+                        'amount'=>$thread['replyAmount'],
+                        'name'=>'问答消费-'.$thread['title'],
+                        'orderSn'=>$orderinfo['sn'],
+                        'category'=>'outflow',
+                        'note'=>''
+                    );
+                    $flow = $this->getCashService()->outflowByCoin($outflow);
+                    if(isset($flow['id'])){
+                        $this->getCashOrdersService()->updateOrder($orderinfo['id'], array('status'=>'paid','payment'=>'coin', 'paidTime'=>time()));
+
+                        //生成收入订单
+                        $inflow = array(
+                            'userId'=>$thread['userId'],
+                            'amount'=>$thread['replyAmount'],
+                            'name'=>'进账问答消费'.$thread['title'],
+                            'orderSn'=>$orderinfo['sn'],
+                            'category'=>'inflow',
+                            'note'=>''
+                        );
+                        $this->getCashService()->inflowByCoin($inflow);
+                    }
+                }
+                return $this->redirect($this->generateUrl('course_thread_show', array(
+                    'courseId'=>$courseId,
+                    'threadId'=>$threadId
+                )));
+            } else {
+                return $this->createMessageResponse('info', "非常抱歉，支付失败", '', 3, $this->generateUrl('course_thread_show', array(
+                    'courseId'=>$courseId,
+                    'threadId'=>$threadId
+                )));
+            }
+        }
+
+        return $this->render('TopxiaWebBundle:CourseThread:reply-amount-modal.html.twig', array(
+            'thread'=>$thread,
+            'courseId'=>$courseId,
+            'threadId'=>$threadId,
+            'account'=>$account,
+            'coinSetting'=>$coinSetting
+        ));
+    }
+
     protected function createThreadForm($data = array(),$flag=true)
     {
         if($flag){
@@ -402,6 +546,7 @@ class CourseThreadController extends CourseBaseController
                 ->add('title', 'text')
                 ->add('content', 'textarea')
                 ->add('virtualAmount', 'number')
+                ->add('replyAmount', 'number')
                 ->add('type', 'hidden')
                 ->add('courseId', 'hidden')
                 ->getForm();

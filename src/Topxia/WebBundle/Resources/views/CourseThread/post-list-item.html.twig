@@ -1,4 +1,7 @@
 {% import "TopxiaWebBundle::macro.html.twig" as web_macro %}
+{%
+    set isShow = thread.extType == 1?((isManager or post.userId == app.user.id or thread.userId == app.user.id)?1:2):1
+%}
 <li id="post-{{ post.id }}" class="thread-post media clearfix">
   {{ web_macro.user_avatar(author, 'pull-left media-object') }}
 
@@ -29,7 +32,15 @@
         <span class="label label-blue">标准答案</span>
       {% endif %}
     </div>
-    <div class="editor-text">{{ post.content|raw }}</div>
+    <div class="editor-text">
+        {% if isShow == 1 or thread.isView == 1 %}
+            {{ post.content|raw }}
+        {% else %}
+            {% if isShow == 2 %}
+                点击<a class="thread-replyamount-action" href="javascript:;" data-url="{{ path('course_thread_relpy_amount', {courseId:course.id,threadId:thread.id}) }}"><span class="label label-primary">围观</span></a>即可查看
+            {% endif %}
+        {% endif %}
+    </div>
     {% include 'TopxiaWebBundle:Attachment/Widget:list.html.twig' with {targetType:'course.thread.post', targetId:post.id|default(0)} %}
     {% if app.user.id != author.id %}
     <div class="thread-post-action" data-user="{{ author.nickname }}"><a href="#thread-post-form" >{{'回复'|trans}}</a></div>

@@ -98,6 +98,15 @@ define(function(require, exports, module) {
             });
         });
 
+        $('.thread-post-list').on('click','.thread-replyamount-action', function(){
+            if($('#replyamount-form').length == 1){
+                $('#modal').modal('show');return;
+            }
+            $.get($(this).data('url'), function(res){
+                $('#modal').append(res).modal('show');
+            });
+        });
+
     };
 
 });

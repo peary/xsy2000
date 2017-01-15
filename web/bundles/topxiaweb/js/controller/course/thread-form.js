@@ -21,8 +21,11 @@ define(function(require, exports, module) {
             var extType = $(this).val();
             if(extType == '1'){
                 $('#thread_virtualAmount').closest('.form-group').show();
+                $('input[name="thread[isPublic]"]').closest('.form-group').show();
             } else {
                 $('#thread_virtualAmount').closest('.form-group').hide();
+                $('input[name="thread[isPublic]"]').closest('.form-group').hide();
+                $('#thread_replyAmount').closest('.form-group').hide();
             }
         });
         $('#thread_virtualAmount').on({
@@ -44,7 +47,36 @@ define(function(require, exports, module) {
                     }
                 }
             }
-        })
+        });
+        $('input[name="thread[isPublic]"]').on('click', function(){
+            var isPublic = $(this).val();
+            if(isPublic == '1'){
+                $('#thread_replyAmount').val(0);
+                $('#thread_replyAmount').closest('.form-group').hide();
+            } else {
+                $('#thread_replyAmount').closest('.form-group').show();
+            }
+        });
+        $('#thread_replyAmount').on({
+            'focusin':function(e){
+                $('#thread_replyAmount').next().hide();
+            },
+            'focusout':function(e){
+                var isPublic = $('input[name="thread[isPublic]"]:checked').val();
+                if(isPublic != '1'){
+                    //验证悬赏金额
+                    var amount = $('#thread_replyAmount').val();
+                    var tip = $('#thread_replyAmount').attr('data-display');
+                    var cash = parseInt($('#thread_virtualAmount').val());
+                    if(amount == '' || parseInt(amount) < 1){
+                        $('#thread_replyAmount').next().html('<span class="text-danger">请输入'+tip+'</span>').show();
+                    }
+                    if(parseInt(amount)>cash){
+                        $('#thread_replyAmount').next().html('<span class="text-danger">请输入金额不能大于悬赏金额</span>').show();return;
+                    }
+                }
+            }
+        });
 
         var type = $('#thread-form').attr('data-type'),
             action = $('#thread-form').attr('data-thread');
@@ -54,6 +86,7 @@ define(function(require, exports, module) {
                 $('input[name="thread[extType]').closest('.form-group').show();
             }
             $('#thread_virtualAmount').val(0);
+            $('#thread_replyAmount').val(0);
         }
 
         validator.addItem({
@@ -87,6 +120,20 @@ define(function(require, exports, module) {
                     if (parseInt(amount) > cash) {
                         $('#thread_virtualAmount').next().html('<span class="text-danger">请输入金额不能大于你的账户余额</span>').show();
                         return;
+                    }
+                }
+
+                var isPublic = $('input[name="thread[isPublic]"]:checked').val();
+                if(isPublic != '1'){
+                    //验证悬赏金额
+                    var amount = $('#thread_replyAmount').val();
+                    var tip = $('#thread_replyAmount').attr('data-display');
+                    var cash = parseInt($('#thread_virtualAmount').val());
+                    if(amount == '' || parseInt(amount) < 1){
+                        $('#thread_replyAmount').next().html('<span class="text-danger">请输入'+tip+'</span>').show();
+                    }
+                    if(parseInt(amount)>cash){
+                        $('#thread_replyAmount').next().html('<span class="text-danger">请输入金额不能大于悬赏金额</span>').show();return;
                     }
                 }
             }

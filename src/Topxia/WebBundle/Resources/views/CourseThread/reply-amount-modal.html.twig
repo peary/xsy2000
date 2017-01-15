@@ -1,0 +1,40 @@
+{% extends 'TopxiaWebBundle::bootstrap-modal-layout.html.twig' %}
+
+{% set modalSize = 'large' %}
+
+{% block title %}{{'我的账户'|trans}}{% endblock %}
+{% block body %}
+
+    <form id="replyamount-form" class="form-horizontal" method="post" action="{{path('course_thread_relpy_amount',{courseId:courseId,threadId:threadId})}}">
+
+        <div class="row form-group">
+            <div class="col-md-4 control">
+                <label for="amount">账户余额:</label>
+            </div>
+            <div class="col-md-4 controls">
+                <label class="money-text">{{ account.cash }}</label>&nbsp;{{ coinSetting.coin_name }}
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-md-4 control">
+                <label for="amount">查看该问题需要消费:</label>
+            </div>
+            <div class="col-md-4 controls">
+                <label class="money-text">{{ thread.replyAmount }}</label>&nbsp;{{ coinSetting.coin_name }}
+            </div>
+        </div>
+        {% if account.cash<thread.replyAmount  %}
+        <div class="row form-group">
+            <div class="col-md-8 control">
+                <label for="amount">您的余额不足，请<a class="money-text" href="javascript:;">立即充值</a></label>
+            </div>
+        </div>
+        {% endif %}
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('site') }}">
+    </form>
+{% endblock %}
+
+{% block footer %}
+    <button id="replyamount-btn" data-submiting-text="{{'正在提交'|trans}}" type="submit" class="btn btn-primary pull-right" data-toggle="form-submit" data-target="#replyamount-form">{{'确定支付'|trans}}</button>
+    <button type="button" class="btn btn-link pull-right" data-dismiss="modal">{{'取消'|trans}}</button>
+{% endblock %}

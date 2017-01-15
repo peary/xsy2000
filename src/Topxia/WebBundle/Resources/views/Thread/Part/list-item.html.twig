@@ -5,9 +5,10 @@
   <div class="media-body">
     <div class="title">
       {% if thread.type == 'question'%}
-        <i class="es-icon es-icon-help color-danger" data-toggle="tooltip" data-placement="top" title="问答"></i>
         {% if thread.extType == '1'%}
         <i class="es-icon es-icon-money color-success" data-toggle="tooltip" data-placement="top" title="悬赏{{ thread.virtualAmount }}"></i>
+        {% else %}
+        <i class="es-icon es-icon-help color-danger" data-toggle="tooltip" data-placement="top" title="问答"></i>
         {% endif %}
       {% endif %}
       {% if thread.type == 'event'%}

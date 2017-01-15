@@ -185,6 +185,24 @@ class ThreadServiceImpl extends BaseService implements ThreadService
         return $this->getThreadPostDao()->searchThreadPostsCount($conditions, $groupBy);
     }
 
+    public function createThreadWg($wg){
+        $wg['createdTime'] = time();
+        return $this->getThreadWgDao()->addPost($wg);
+    }
+
+    public function searchThreadWg($conditions, $sort, $start, $limit, $groupBy = '')
+    {
+        if (is_array($sort)) {
+            $orderBy = $sort;
+        } elseif ($sort == 'createdTimeByAsc') {
+            $orderBy = array('createdTime', 'ASC');
+        } else {
+            $orderBy = array('createdTime', 'DESC');
+        }
+
+        return $this->getThreadWgDao()->searchThreadPosts($conditions, $orderBy, $start, $limit, $groupBy);
+    }
+
     public function createThread($thread)
     {
         if (empty($thread['courseId'])) {
@@ -507,6 +525,11 @@ class ThreadServiceImpl extends BaseService implements ThreadService
     protected function getThreadPostDao()
     {
         return $this->createDao('Course.ThreadPostDao');
+    }
+
+    protected function getThreadWgDao()
+    {
+        return $this->createDao('Course.ThreadWgDao');
     }
 
     protected function getCourseService()

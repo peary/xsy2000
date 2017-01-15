@@ -12,3 +12,12 @@ ALTER TABLE `course_thread` ADD COLUMN `virtualAmount` INT DEFAULT 0 NULL COMMEN
 ALTER TABLE `cash_orders` ADD COLUMN `targetId` INT(11) DEFAULT 0 NULL COMMENT '订单所属对象ID' AFTER `targetType`;
 ALTER TABLE `course_thread` ADD COLUMN `postId` INT(11) DEFAULT 0 NULL COMMENT '标准答案id' AFTER `virtualAmount`;
 ALTER TABLE `course_thread` ADD COLUMN `isFinish` TINYINT(1) DEFAULT 0 NULL COMMENT '0默认 已完成 2取消' AFTER `postId`;
+ALTER TABLE `course_thread` ADD COLUMN `isPublic` TINYINT(1) DEFAULT 0 NULL COMMENT '1公开 0不公开' AFTER `virtualAmount`, ADD COLUMN `replyAmount` INT(11) DEFAULT 0 NULL COMMENT '围观付费金额' AFTER `isPublic`;
+CREATE TABLE `course_thread_wg` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `courseId` int(11) DEFAULT '0' COMMENT '课程id',
+  `threadId` int(11) DEFAULT '0' COMMENT '话题或问题id',
+  `userId` int(11) DEFAULT '0' COMMENT '用户id',
+  `createdTime` int(11) DEFAULT '0' COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
