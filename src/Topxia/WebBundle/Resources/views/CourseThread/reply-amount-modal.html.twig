@@ -11,7 +11,7 @@
             <div class="col-md-4 control">
                 <label for="amount">账户余额:</label>
             </div>
-            <div class="col-md-4 controls">
+            <div class="col-md-6 controls">
                 <label class="money-text">{{ account.cash }}</label>&nbsp;{{ coinSetting.coin_name }}
             </div>
         </div>
@@ -19,14 +19,18 @@
             <div class="col-md-4 control">
                 <label for="amount">查看该问题需要消费:</label>
             </div>
-            <div class="col-md-4 controls">
+            <div class="col-md-6 controls">
                 <label class="money-text">{{ thread.replyAmount }}</label>&nbsp;{{ coinSetting.coin_name }}
             </div>
         </div>
-        {% if account.cash<thread.replyAmount  %}
+        {% if isManager %}
         <div class="row form-group">
             <div class="col-md-8 control">
-                <label for="amount">您的余额不足，请<a class="money-text" href="javascript:;">立即充值</a></label>
+                {% if account.cash<thread.replyAmount  %}
+                <label for="amount">您的余额不足，请<a class="money-text" href="javascript:;" node-type="chongchi" data-url="{{ path('course_thread_add_amount') }}">立即充值>></a></label>
+                {% else %}
+                <label for="amount">您还可以<a class="money-text" href="javascript:;" node-type="chongchi" data-url="{{ path('course_thread_add_amount') }}">充值>></a></label>
+                {% endif %}
             </div>
         </div>
         {% endif %}

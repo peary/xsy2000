@@ -443,6 +443,17 @@ class CoinController extends BaseController
         )));
     }
 
+    public function orderInfoAction(Request $request, $sn)
+    {
+        $order = $this->getCashOrdersService()->getOrderBySn($sn);
+
+        if (empty($order)) {
+            throw $this->createNotFoundException('订单不存在!');
+        }
+
+        return $this->render('TopxiaWebBundle:Coin:coin-order.html.twig', array('order' => $order));
+    }
+
     public function resultNoticeAction(Request $request)
     {
         return $this->render('TopxiaWebBundle:Coin:retrun-notice.html.twig');

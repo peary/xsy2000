@@ -291,8 +291,12 @@ class CourseThreadController extends CourseBaseController
             //}
         }
 
+        //检查是否是管理员
+        $isManager = $this->getCourseService()->canManageCourse($course['id']);
+
         return $this->render("TopxiaWebBundle:CourseThread:form.html.twig", array(
             'course' => $course,
+            'isManager'=>$isManager,
             'member' => $member,
             'account'=> $account,
             'coinSetting'=>$coinSetting,
@@ -523,11 +527,56 @@ class CourseThreadController extends CourseBaseController
             }
         }
 
+        //检查是否是管理员
+        $isManager = $this->getCourseService()->canManageCourse($courseId);
+
         return $this->render('TopxiaWebBundle:CourseThread:reply-amount-modal.html.twig', array(
             'thread'=>$thread,
+            'isManager'=>$isManager,
             'courseId'=>$courseId,
             'threadId'=>$threadId,
             'account'=>$account,
+            'coinSetting'=>$coinSetting
+        ));
+    }
+
+    public function addAmountAction(Request $request){
+        $user = $this->getCurrentUser();
+        //获取用户现金账户
+        $account = $this->getCashAccountService()->getAccountByUserId($user->id, true);
+        if(empty($account)){
+            $account['cash'] = 0;
+        }
+
+        //获取新币汇率
+        $coinSetting = $this->getSettingService()->get('coin');
+
+        if ($request->getMethod() == 'POST') {
+            $formData = $request->request->all();
+            if($formData['amount']>0){
+                //创建订单
+                $order = array(
+                    'userId'=>$user->id,
+                    'amount'=>$formData['amount'],
+                    'targetType'=>'coin',
+                    'targetId'=>'',
+                    'payment'=>'wxpay',
+                    'note'=>''
+                );
+                $orderinfo = $this->getCashOrdersService()->addOrder($order);
+                if(!empty($orderinfo)){
+                    return $this->redirect($this->generateUrl('pay_center_show', array(
+                        'sn'=>$orderinfo['sn'],
+                        'targetType'=>'coin'
+                    )));
+                } else {
+                    return $this->createMessageResponse('info', "非常抱歉，支付失败", '', 3, $this->generateUrl('my_coin'));
+                }
+            }
+        }
+
+        return $this->render("TopxiaWebBundle:CourseThread:add-amount-modal.html.twig", array(
+            'account'=> $account,
             'coinSetting'=>$coinSetting
         ));
     }

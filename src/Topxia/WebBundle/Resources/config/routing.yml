@@ -628,6 +628,10 @@ course_thread_set_answer:
     pattern:  /course/{courseId}/thread/{threadId}/post/{id}/setAnswer
     defaults: { _controller: TopxiaWebBundle:CourseThread:setAnswer }
 
+course_thread_add_amount:
+    pattern:  /course/thread/addAmount
+    defaults: { _controller: TopxiaWebBundle:CourseThread:addAmount }
+
 course_thread_relpy_amount:
     pattern:  /course/{courseId}/thread/{threadId}/replyAmount
     defaults: { _controller: TopxiaWebBundle:CourseThread:replyAmount }
