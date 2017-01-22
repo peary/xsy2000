@@ -232,28 +232,6 @@ class CourseThreadController extends CourseBaseController
 
                     //如果添加成功，则添加消费记录
                     if(isset($thread['id']) && isset($thread['extType']) && $thread['extType'] == 1){
-//                       //添加消费订单
-//                       $order = array(
-//                           'userId'=>$user->id,
-//                           'title'=>'悬赏消费-'.$formData['title'],
-//                           'amount'=>$formData['virtualAmount'],
-//                           'targetType'=>'course_thread',
-//                           'targetId'=>$thread['id'],
-//                           'payment'=>'coin',
-//                           'note'=>'',
-//                           'snPrefix'=>'CT',
-//                           'data'=>'',
-//                           'couponCode'=>'',
-//                           'coinAmount'=>$formData['virtualAmount'],
-//                           'coinRate'=>$coinSetting['cash_rate'],
-//                           'priceType'=>'Coin',
-//                           'totalPrice'=>$formData['virtualAmount'],
-//                           'coupon'=>'',
-//                           'couponDiscount'=>'0.00',
-//                           'discountId'=>'',
-//                           'discount'=>'0.00'
-//                       );
-//                       $orderinfo = $this->getOrderService()->createOrder($order);
                        //添加消费订单
                        $order = array(
                            'userId'=>$user->id,
@@ -527,6 +505,11 @@ class CourseThreadController extends CourseBaseController
             }
         }
 
+        //开通虚拟币账户
+        if (!isset($account['userId'])) {
+            $this->getCashAccountService()->createAccount($user->id);
+        }
+
         //检查是否是管理员
         $isManager = $this->getCourseService()->canManageCourse($courseId);
 
@@ -573,6 +556,11 @@ class CourseThreadController extends CourseBaseController
                     return $this->createMessageResponse('info', "非常抱歉，支付失败", '', 3, $this->generateUrl('my_coin'));
                 }
             }
+        }
+
+        //开通虚拟币账户
+        if (!isset($account['userId'])) {
+            $this->getCashAccountService()->createAccount($user->id);
         }
 
         return $this->render("TopxiaWebBundle:CourseThread:add-amount-modal.html.twig", array(
