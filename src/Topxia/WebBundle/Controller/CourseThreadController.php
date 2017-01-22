@@ -542,7 +542,7 @@ class CourseThreadController extends CourseBaseController
                     'userId'=>$user->id,
                     'amount'=>$formData['amount'],
                     'targetType'=>'coin',
-                    'targetId'=>'',
+                    'targetId'=>0,
                     'payment'=>'wxpay',
                     'note'=>''
                 );
