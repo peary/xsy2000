@@ -31,6 +31,12 @@ interface ThreadService
 
     public function deleteThread($threadId);
 
+    public function finishThread($courseId, $threadId, $thread);
+
+    public function createThreadWg($wg);
+
+    public function searchThreadWg($conditions,$sort, $start, $limit,$groupBy);
+
     public function stickThread($courseId, $threadId);
 
     public function unstickThread($courseId, $threadId);
