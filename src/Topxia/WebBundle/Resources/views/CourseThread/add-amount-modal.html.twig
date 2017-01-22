@@ -1,0 +1,36 @@
+{% extends 'TopxiaWebBundle::bootstrap-modal-layout.html.twig' %}
+
+{% set modalSize = 'large' %}
+
+{% block title %}{{'我要充值'|trans}}{% endblock %}
+{% block body %}
+
+    <form id="addamount-form" class="form-horizontal" method="post" action="{{path('course_thread_add_amount')}}">
+        <div class="row form-group">
+            <div class="col-md-2 control">
+                <label for="amount">账户余额:</label>
+            </div>
+            <div class="col-md-8 controls">
+                <label class="money-text">{{ account.cash }}</label>&nbsp;{{ coinSetting.coin_name }}
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-md-2 control">
+                <label for="amount">充值金额:</label>
+            </div>
+            <div class="col-md-3 controls">
+                <input class="form-control" placeholder="{{'充值金额'|trans}}" name="amount" type="number" />
+                <div class="help-block" style="display:none;"></div>
+            </div>
+            <div class="col-md-5 controls">
+                <span>元,&nbsp;&nbsp;注意：1元兑换{{ coinSetting.cash_rate }}{{ coinSetting.coin_name }}</span>
+            </div>
+        </div>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('site') }}">
+    </form>
+{% endblock %}
+
+{% block footer %}
+    <button id="addamount-btn" data-submiting-text="{{'正在提交'|trans}}" type="submit" class="btn btn-primary pull-right">{{'现在充值'|trans}}</button>
+    <button type="button" class="btn btn-link pull-right" data-dismiss="modal">{{'取消'|trans}}</button>
+{% endblock %}
