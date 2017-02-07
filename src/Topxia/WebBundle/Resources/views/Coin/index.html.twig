@@ -10,8 +10,8 @@
     {% include 'TopxiaWebBundle:Coin:bill-bar.html.twig' %}
     <span class="label label-primary label-md">{{'账户余额'|trans}}</span>
     {% if setting('coin.coin_content') %}
-      <a href="javascript:;" node-type="chongchi" data-url="{{ path('course_thread_add_amount') }}">{{setting('coin.coin_name')}}{{'充值'|trans}}>></a>
-      ' | '
+      <a href="javascript:;" node-type="chongchi" data-url="{{ path('course_thread_add_amount') }}">{{setting('coin.coin_name')}}{{'充值'|trans}}</a>
+      &nbsp;&nbsp;
       <a href="/coin/show" target="_blank" class="pull-right">{{setting('coin.coin_name')}}{{'说明'|trans}}</a>
     {% endif %}
     <br>
