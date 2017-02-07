@@ -6,8 +6,8 @@ if (!file_exists(__DIR__.'/../app/data/install.lock')) {
 }
 
 if ((strpos($_SERVER['REQUEST_URI'], '/api') === 0) || (strpos($_SERVER['REQUEST_URI'], '/app.php/api') === 0)) {
-    define('API_ENV', 'prod');
-//	define('API_ENV', 'dev');
+//    define('API_ENV', 'prod');
+	define('API_ENV', 'dev');
     include __DIR__.'/../api/index.php';
     exit();
 }
