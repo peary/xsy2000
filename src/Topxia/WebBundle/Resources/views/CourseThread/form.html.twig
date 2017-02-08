@@ -48,7 +48,7 @@
                 {% if thread %}
                     {% set extType = thread.extType=='1'?1:0 %}
                 {% else %}
-                    {% set extType = 0 %}
+                    {% set extType = 1 %}
                 {% endif %}
                 <label><input type="radio" name="thread[extType]" value="0" {% if extType == 0 %}checked="checked"{% endif %}> 不悬赏</label>
                 <label><input type="radio" name="thread[extType]" value="1" {% if extType == 1 %}checked="checked"{% endif %}> 悬赏</label>
@@ -69,7 +69,7 @@
                 {% if thread %}
                     {% set isPublic = thread.isPublic=='1'?1:0 %}
                 {% else %}
-                    {% set isPublic = 1 %}
+                    {% set isPublic = 0 %}
                 {% endif %}
                 <label><input type="radio" name="thread[isPublic]" value="1" {% if isPublic == 1 %}checked="checked"{% endif %}> 公开</label>
                 <label><input type="radio" name="thread[isPublic]" value="0" {% if isPublic == 0 %}checked="checked"{% endif %}> 不公开</label>
