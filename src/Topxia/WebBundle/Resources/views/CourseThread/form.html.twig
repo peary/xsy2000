@@ -50,9 +50,9 @@
                 {% else %}
                     {% set extType = 1 %}
                 {% endif %}
-                <label><input type="radio" name="thread[extType]" value="1" {% if extType == 1 %}checked="checked"{% endif %}> 悬赏</label>
+                <label><input type="radio" name="thread[extType]" value="1" {% if extType == 1 %}checked="checked"{% endif %}> 悬赏</label>G
                 <label><input type="radio" name="thread[extType]" value="0" {% if extType == 0 %}checked="checked"{% endif %}> 不悬赏</label>
-                <div class="help-block">{{'选择悬赏将会扣除部分账户余额。'|trans}}</div>
+                <div class="help-block">{{'选择悬赏将会扣除你个人账户部分余额，并得到本站教学专家单独的语音指点。'|trans}}</div>
             </div>
         </div>
         <div class="form-group" style="display:{% if extType==0 %}none{% endif %}">
@@ -69,11 +69,11 @@
                 {% if thread %}
                     {% set isPublic = thread.isPublic=='1'?1:0 %}
                 {% else %}
-                    {% set isPublic = 0 %}
+                    {% set isPublic = 1 %}
                 {% endif %}
-                <label><input type="radio" name="thread[isPublic]" value="0" {% if isPublic == 0 %}checked="checked"{% endif %}> 不公开</label>
                 <label><input type="radio" name="thread[isPublic]" value="1" {% if isPublic == 1 %}checked="checked"{% endif %}> 公开</label>
-                <div class="help-block">选择公开，所有人都能看到该问题的答案</div>
+                <label><input type="radio" name="thread[isPublic]" value="0" {% if isPublic == 0 %}checked="checked"{% endif %}> 不公开</label>
+                <div class="help-block">选择公开，所有人都能看到你的提问，需要交费查看问题答案，交费由你与答疑专家分成。选择不公开，提问和答案只能你自己可见。</div>
             </div>
         </div>
         <div class="form-group" style="display:{% if extType!=1 and isPublic!=0 %}none{% endif %}">
@@ -81,7 +81,7 @@
                 {{ form_widget(form.replyAmount, {attr:{class:'form-control', 'style':'width:40%', placeholder:"请填写查看答案的金额，只能为整数", 'data-display':'查看答案的金额'|trans}}) }}
                 <div class="help-block" style="display:none;"></div>
             </div>
-            <div class="help-block">如果你选择了答案不公开的悬赏问题，其他用户必须付费才能查看该问题的答案</div>
+            <div class="help-block">其他人查看问题答案的交费金额</div>
         </div>
     {% endif %}
 
