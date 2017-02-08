@@ -76,7 +76,7 @@
                 <div class="help-block">选择公开，所有人都能看到你的提问，需要交费查看问题答案，交费由你与答疑专家分成。选择不公开，提问和答案只能你自己可见。</div>
             </div>
         </div>
-        <div class="form-group" style="display:{% if extType!=1 and isPublic!=0 %}none{% endif %}">
+        <div class="form-group" style="display:{% if extType==0 or isPublic==0 %}none{% endif %}">
             <div class="controls">
                 {{ form_widget(form.replyAmount, {attr:{class:'form-control', 'style':'width:40%', placeholder:"请填写查看答案的金额，只能为整数", 'data-display':'查看答案的金额'|trans}}) }}
                 <div class="help-block" style="display:none;"></div>
