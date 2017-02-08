@@ -50,8 +50,8 @@
                 {% else %}
                     {% set extType = 1 %}
                 {% endif %}
-                <label><input type="radio" name="thread[extType]" value="0" {% if extType == 0 %}checked="checked"{% endif %}> 不悬赏</label>
                 <label><input type="radio" name="thread[extType]" value="1" {% if extType == 1 %}checked="checked"{% endif %}> 悬赏</label>
+                <label><input type="radio" name="thread[extType]" value="0" {% if extType == 0 %}checked="checked"{% endif %}> 不悬赏</label>
                 <div class="help-block">{{'选择悬赏将会扣除部分账户余额。'|trans}}</div>
             </div>
         </div>
@@ -71,8 +71,8 @@
                 {% else %}
                     {% set isPublic = 0 %}
                 {% endif %}
-                <label><input type="radio" name="thread[isPublic]" value="1" {% if isPublic == 1 %}checked="checked"{% endif %}> 公开</label>
                 <label><input type="radio" name="thread[isPublic]" value="0" {% if isPublic == 0 %}checked="checked"{% endif %}> 不公开</label>
+                <label><input type="radio" name="thread[isPublic]" value="1" {% if isPublic == 1 %}checked="checked"{% endif %}> 公开</label>
                 <div class="help-block">选择公开，所有人都能看到该问题的答案</div>
             </div>
         </div>
