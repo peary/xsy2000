@@ -50,7 +50,7 @@
                 {% else %}
                     {% set extType = 1 %}
                 {% endif %}
-                <label><input type="radio" name="thread[extType]" value="1" {% if extType == 1 %}checked="checked"{% endif %}> 悬赏</label>G
+                <label><input type="radio" name="thread[extType]" value="1" {% if extType == 1 %}checked="checked"{% endif %}> 悬赏</label>
                 <label><input type="radio" name="thread[extType]" value="0" {% if extType == 0 %}checked="checked"{% endif %}> 不悬赏</label>
                 <div class="help-block">{{'选择悬赏将会扣除你个人账户部分余额，并得到本站教学专家单独的语音指点。'|trans}}</div>
             </div>
