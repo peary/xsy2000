@@ -85,8 +85,8 @@ define(function(require, exports, module) {
             if(type == 'question'){
                 $('input[name="thread[extType]').closest('.form-group').show();
             }
-            $('#thread_virtualAmount').val(0);
-            $('#thread_replyAmount').val(0);
+            $('#thread_virtualAmount').val(20);
+            $('#thread_replyAmount').val(5);
         }
 
         validator.addItem({
