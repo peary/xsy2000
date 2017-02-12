@@ -180,13 +180,16 @@ class CourseThreadController extends CourseBaseController
         $type = $request->query->get('type') ?: 'discussion';
         $form = $this->createThreadForm(array(
             'type'     => $type,
-            'courseId' => $course['id']
+            'courseId' => $course['id'],
+            'cash' => $account['cash']
         ), false);
 
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             $formData = $request->request->all();
             $formData = $formData['thread'];
+            $type = $formData['type'];
+
             //验证虚拟币
             if($type == 'question' && $formData['extType'] == 1){
                 //验证账户余额
@@ -198,7 +201,7 @@ class CourseThreadController extends CourseBaseController
                 }
 
                 //验证是否公开
-                if($formData['isPublic'] != 1 && (empty($formData['replyAmount']) || $formData['replyAmount']<1 || $formData['replyAmount']>$formData['virtualAmount'])){
+                if($formData['isPublic'] != 1 && (empty($formData['replyAmount']) || $formData['replyAmount']>$formData['virtualAmount'])){
                     return $this->createMessageResponse('info', "非常抱歉，查看问题付费答案的金额不正确，请重新填写", '', 3, $this->generateUrl('course_thread_create', array(
                         'id' => $id,
                         'type'=>$type
@@ -209,6 +212,7 @@ class CourseThreadController extends CourseBaseController
             //if ($form->isValid()) {
                 try {
                     $rdata = $form->getData();
+                    unset($rdata['cash']);
                     if(isset($formData['extType']) && $formData['extType'] == 1){
                         $rdata['extType'] = $formData['extType'];
                         $rdata['virtualAmount'] = $formData['virtualAmount'];
@@ -582,10 +586,9 @@ class CourseThreadController extends CourseBaseController
             return $this->createNamedFormBuilder('thread', $data)
                 ->add('title', 'text')
                 ->add('content', 'textarea')
-                ->add('virtualAmount', 'number')
-                ->add('replyAmount', 'number')
                 ->add('type', 'hidden')
                 ->add('courseId', 'hidden')
+                ->add('cash', 'hidden')
                 ->getForm();
         }
     }

@@ -40,6 +40,7 @@
         {% if thread.extType=='1' %}
         <div class="form-group">
             <div class="help-block">悬赏金额：{{ thread.virtualAmount }}{{ coinSetting.coin_name }}</div>
+            <div class="help-block">查看问题付费金额：{{ thread.replyAmount }}{{ coinSetting.coin_name }}</div>
         </div>
         {% endif %}
     {% else %}
@@ -48,7 +49,7 @@
                 {% if thread %}
                     {% set extType = thread.extType=='1'?1:0 %}
                 {% else %}
-                    {% set extType = 1 %}
+                    {% set extType = type=='question'?1:0 %}
                 {% endif %}
                 <label><input type="radio" name="thread[extType]" value="1" {% if extType == 1 %}checked="checked"{% endif %}> 悬赏</label>
                 <label><input type="radio" name="thread[extType]" value="0" {% if extType == 0 %}checked="checked"{% endif %}> 不悬赏</label>
@@ -57,11 +58,19 @@
         </div>
         <div class="form-group" style="display:{% if extType==0 %}none{% endif %}">
             <div class="controls">
-                {{ form_widget(form.virtualAmount, {attr:{class:'form-control', 'style':'width:40%', placeholder:"请填写悬赏金额，只能为整数", 'data-display':'悬赏金额'|trans}}) }}
+                <label>悬赏金额：</label>
+                <select id="thread_virtualAmount" name="thread[virtualAmount]">
+                    <option value="10">10</option>
+                    <option value="10">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="500">500</option>
+                </select>
                 <div class="help-block" style="display:none;"></div>
             </div>
             <div class="help-block">(账户余额:{{ account.cash }}{{ coinSetting.coin_name }})
-                <a href="javascript:;" node-type="chongchi" data-url="{{ path('course_thread_add_amount') }}">我要充值>></a>
+                <a href="javascript:;" node-type="chongzhi" data-url="{{ path('course_thread_add_amount') }}">我要充值>></a>
             </div>
         </div>
         <div class="form-group" style="display:{% if extType==0 %}none{% endif %}">
@@ -69,16 +78,24 @@
                 {% if thread %}
                     {% set isPublic = thread.isPublic=='1'?1:0 %}
                 {% else %}
-                    {% set isPublic = 1 %}
+                    {% set isPublic = extType=='1'?0:1 %}
                 {% endif %}
-                <label><input type="radio" name="thread[isPublic]" value="1" {% if isPublic == 1 %}checked="checked"{% endif %}> 公开</label>
                 <label><input type="radio" name="thread[isPublic]" value="0" {% if isPublic == 0 %}checked="checked"{% endif %}> 不公开</label>
-                <div class="help-block">选择公开，所有人都能看到你的提问，需要交费查看问题答案，交费由你与答疑专家分成。<br>选择不公开，提问和答案只能你自己可见。</div>
+                <label><input type="radio" name="thread[isPublic]" value="1" {% if isPublic == 1 %}checked="checked"{% endif %}> 公开</label>
+                <div class="help-block">选择不公开，所有人都能看到你的提问，需要交费查看问题答案，交费由你与答疑专家分成。<br>选择公开，提问和答案所有人都可见。</div>
             </div>
         </div>
-        <div class="form-group" style="display:{% if extType==0 or isPublic==0 %}none{% endif %}">
+        <div class="form-group" style="display:{% if extType==0 or isPublic==1 %}none{% endif %}">
             <div class="controls">
-                {{ form_widget(form.replyAmount, {attr:{class:'form-control', 'style':'width:40%', placeholder:"请填写查看答案的金额，只能为整数", 'data-display':'查看答案的金额'|trans}}) }}
+                <label>查看答案付费金额：</label>
+                <select id="thread_replyAmount" name="thread[replyAmount]">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                </select>
                 <div class="help-block" style="display:none;"></div>
             </div>
             <div class="help-block">其他人查看问题答案的交费金额</div>

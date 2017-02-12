@@ -11,7 +11,7 @@
     <span class="label label-primary label-md">{{'账户余额'|trans}}</span>
     {% if setting('coin.coin_content') %}
       <div class="control-label pull-right" style="padding-top: 8px;">
-        <a href="javascript:;" node-type="chongchi" data-url="{{ path('course_thread_add_amount') }}"> {{setting('coin.coin_name')}}{{'充值'|trans}} </a>
+        <a href="javascript:;" node-type="chongzhi" data-url="{{ path('course_thread_add_amount') }}"> {{setting('coin.coin_name')}}{{'充值'|trans}} </a>
         &nbsp;&nbsp;
         <a href="/coin/show" target="_blank" >{{setting('coin.coin_name')}}{{'说明'|trans}}</a>
       </div>
@@ -23,7 +23,6 @@
           <img class="coin-picture" src="{{asset(setting('coin.coin_picture')) }}" alt="{{'虚拟币图片'|trans}}" width="30px" >
         {% endif %}
         <strong>{{account.cash|default(0)}}</strong>
-        <a href="javascript:;" style="margin-left:30px;font-weight: bold" node-type="chongzhi" data-url="{{ path('course_thread_add_amount') }}">我要充值>></a>
       </div>
 
       {% if setting('coin.coin_enabled') %}

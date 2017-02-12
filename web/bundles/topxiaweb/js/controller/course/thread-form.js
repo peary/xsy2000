@@ -22,59 +22,43 @@ define(function(require, exports, module) {
             if(extType == '1'){
                 $('#thread_virtualAmount').closest('.form-group').show();
                 $('input[name="thread[isPublic]"]').closest('.form-group').show();
+                if($('input[name="thread[isPublic]"]').val() == '1'){
+                    $('#thread_replyAmount').closest('.form-group').hide();
+                } else {
+                    $('#thread_replyAmount').closest('.form-group').show();
+                }
             } else {
                 $('#thread_virtualAmount').closest('.form-group').hide();
                 $('input[name="thread[isPublic]"]').closest('.form-group').hide();
                 $('#thread_replyAmount').closest('.form-group').hide();
             }
         });
-        $('#thread_virtualAmount').on({
-            'focusin':function(e){
-                $('#thread_virtualAmount').next().hide();
-            },
-            'focusout':function(e){
-                var extType = $('input[name="thread[extType]"]:checked').val();
-                if(extType == '1'){
-                    //验证悬赏金额
-                    var amount = $('#thread_virtualAmount').val();
-                    var tip = $('#thread_virtualAmount').attr('data-display');
-                    var cash = parseInt($('#thread_virtualAmount').attr('data-cash'));
-                    if(amount == '' || parseInt(amount) < 1){
-                        $('#thread_virtualAmount').next().html('<span class="text-danger">请输入'+tip+'</span>').show();
-                    }
-                    if(parseInt(amount)>cash){
-                        $('#thread_virtualAmount').next().html('<span class="text-danger">请输入金额不能大于你的账户余额</span>').show();return;
-                    }
-                }
-            }
-        });
         $('input[name="thread[isPublic]"]').on('click', function(){
             var isPublic = $(this).val();
             if(isPublic == '1'){
-                $('#thread_replyAmount').val(0);
                 $('#thread_replyAmount').closest('.form-group').hide();
             } else {
                 $('#thread_replyAmount').closest('.form-group').show();
             }
         });
-        $('#thread_replyAmount').on({
-            'focusin':function(e){
-                $('#thread_replyAmount').next().hide();
-            },
-            'focusout':function(e){
-                var isPublic = $('input[name="thread[isPublic]"]:checked').val();
-                if(isPublic != '1'){
-                    //验证悬赏金额
-                    var amount = $('#thread_replyAmount').val();
-                    var tip = $('#thread_replyAmount').attr('data-display');
-                    var cash = parseInt($('#thread_virtualAmount').val());
-                    if(amount == '' || parseInt(amount) < 1){
-                        $('#thread_replyAmount').next().html('<span class="text-danger">请输入'+tip+'</span>').show();
-                    }
-                    if(parseInt(amount)>cash){
-                        $('#thread_replyAmount').next().html('<span class="text-danger">请输入金额不能大于悬赏金额</span>').show();return;
-                    }
+        $('#thread_virtualAmount').on('change', function(){
+            $(this).next().html('').hide();
+            var extType = $('input[name="thread[extType]"]:checked').val();
+            if (extType == '1') {
+                //验证悬赏金额
+                var amount = $('#thread_virtualAmount').val();
+                var cash = parseInt($('input[name="thread[cash]"]').val());
+                if (parseInt(amount) > cash) {
+                    $('#thread_virtualAmount').next().html('<span class="text-danger">请输入金额不能大于你的账户余额</span>').show();
                 }
+            }
+        });
+        $('#thread_replyAmount').on('change', function(){
+            $(this).next().html('').hide();
+            var amount = $('#thread_replyAmount').val();
+            var cash = parseInt($('#thread_virtualAmount').val());
+            if(parseInt(amount)>cash){
+                $('#thread_replyAmount').next().html('<span class="text-danger">请输入付费金额不能大于悬赏金额</span>').show();return;
             }
         });
 
@@ -85,8 +69,6 @@ define(function(require, exports, module) {
             if(type == 'question'){
                 $('input[name="thread[extType]').closest('.form-group').show();
             }
-            $('#thread_virtualAmount').val(20);
-            $('#thread_replyAmount').val(5);
         }
 
         validator.addItem({
@@ -100,46 +82,39 @@ define(function(require, exports, module) {
             required: true
         });
 
-        validator.on('formValidate', function(elemetn, event) {
+        validator.on('formValidate', function(element, event) {
             editor.updateElement();
         });
 
         validator.on('formValidated', function(err, msg, $form) {
+            console.log(err);console.log($form);
             //验证是否悬赏
             if(action != 'edit') {
                 var extType = $('input[name="thread[extType]"]:checked').val();
                 if (extType == '1') {
                     //验证悬赏金额
                     var amount = $('#thread_virtualAmount').val();
-                    var tip = $('#thread_virtualAmount').attr('data-display');
-                    var cash = parseInt($('#thread_virtualAmount').attr('data-cash'));
-                    if (amount == '' || parseInt(amount) < 1) {
-                        $('#thread_virtualAmount').next().html('<span class="text-danger">请输入' + tip + '</span>').show();
-                        return;
-                    }
+                    var cash = parseInt($('input[name="thread[cash]"]').val());
                     if (parseInt(amount) > cash) {
-                        $('#thread_virtualAmount').next().html('<span class="text-danger">请输入金额不能大于你的账户余额</span>').show();
-                        return;
+                        $('#thread_virtualAmount').next().html('<span class="text-danger">选择的悬赏金额不能大于你的账户余额</span>').show();
+                        err = true;
                     }
                 }
 
                 var isPublic = $('input[name="thread[isPublic]"]:checked').val();
                 if(isPublic != '1'){
-                    //验证悬赏金额
+                    //验证付费金额
                     var amount = $('#thread_replyAmount').val();
-                    var tip = $('#thread_replyAmount').attr('data-display');
                     var cash = parseInt($('#thread_virtualAmount').val());
-                    if(amount == '' || parseInt(amount) < 1){
-                        $('#thread_replyAmount').next().html('<span class="text-danger">请输入'+tip+'</span>').show();
-                    }
                     if(parseInt(amount)>cash){
-                        $('#thread_replyAmount').next().html('<span class="text-danger">请输入金额不能大于悬赏金额</span>').show();return;
+                        $('#thread_replyAmount').next().html('<span class="text-danger">选择的付费金额不能大于悬赏金额</span>').show();return;
+                        err = true;
                     }
                 }
             }
 
             if (err == true) {
-                return ;
+                return '';
             }
 
             $form.find('[type=submit]').attr('disabled', 'disabled');
