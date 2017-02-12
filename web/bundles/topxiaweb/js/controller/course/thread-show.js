@@ -107,7 +107,7 @@ define(function(require, exports, module) {
             });
         });
 
-        $(document).on('click', '*[node-type="chongchi"]', function(){
+        $(document).on('click', '*[node-type="chongzhi"]', function(){
             if($('#replyamount-form').length == 1){
                 $('#modal').modal('hide');
             }

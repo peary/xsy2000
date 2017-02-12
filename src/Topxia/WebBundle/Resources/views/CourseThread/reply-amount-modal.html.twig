@@ -23,17 +23,15 @@
                 <label class="money-text">{{ thread.replyAmount }}</label>&nbsp;{{ coinSetting.coin_name }}
             </div>
         </div>
-        {% if isManager %}
         <div class="row form-group">
             <div class="col-md-8 control">
                 {% if account.cash<thread.replyAmount  %}
-                <label for="amount">您的余额不足，请<a class="money-text" href="javascript:;" node-type="chongchi" data-url="{{ path('course_thread_add_amount') }}">立即充值>></a></label>
+                <label for="amount">您的余额不足，请<a class="money-text" href="javascript:;" node-type="chongzhi" data-url="{{ path('course_thread_add_amount') }}">立即充值>></a></label>
                 {% else %}
-                <label for="amount">您还可以<a class="money-text" href="javascript:;" node-type="chongchi" data-url="{{ path('course_thread_add_amount') }}">充值>></a></label>
+                <label for="amount">您还可以<a class="money-text" href="javascript:;" node-type="chongzhi" data-url="{{ path('course_thread_add_amount') }}">充值>></a></label>
                 {% endif %}
             </div>
         </div>
-        {% endif %}
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('site') }}">
     </form>
 {% endblock %}

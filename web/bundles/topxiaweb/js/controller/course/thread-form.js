@@ -148,7 +148,7 @@ define(function(require, exports, module) {
         });
 
 
-        $('*[node-type="chongchi"]').on('click', function(){
+        $('*[node-type="chongzhi"]').on('click', function(){
             if($('#addamount-form').length == 1){
                 $('#modal').modal('show');return;
             }

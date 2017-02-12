@@ -61,9 +61,7 @@
                 <div class="help-block" style="display:none;"></div>
             </div>
             <div class="help-block">(账户余额:{{ account.cash }}{{ coinSetting.coin_name }})&nbsp;&nbsp;&nbsp;&nbsp;
-                {% if isManager %}
-                <a href="javascript:;" node-type="chongchi" data-url="{{ path('course_thread_add_amount') }}">我要充值>></a>
-                {% endif %}
+                <a href="javascript:;" node-type="chongzhi" data-url="{{ path('course_thread_add_amount') }}">我要充值>></a>
             </div>
         </div>
         <div class="form-group" style="display:{% if extType==0 %}none{% endif %}">

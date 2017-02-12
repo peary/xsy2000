@@ -2,7 +2,7 @@
 {% block title %}
   我的{{setting('coin.coin_name')}} - {{ parent() }}
 {% endblock %}
-
+{% set script_controller = 'coin/coin-index' %}
 {% set side_nav = 'my-coin' %}
 
 {% block main %}
@@ -19,6 +19,7 @@
           <img class="coin-picture" src="{{asset(setting('coin.coin_picture')) }}" alt="{{'虚拟币图片'|trans}}" width="30px" >
         {% endif %}
         <strong>{{account.cash|default(0)}}</strong>
+        <a href="javascript:;" style="margin-left:30px;font-weight: bold" node-type="chongzhi" data-url="{{ path('course_thread_add_amount') }}">我要充值>></a>
       </div>
 
       {% if setting('coin.coin_enabled') %}
