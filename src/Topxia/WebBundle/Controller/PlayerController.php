@@ -318,6 +318,17 @@ class PlayerController extends BaseController
                 throw $this->createAccessDeniedException();
             }
         }
+
+        //视频只能观看不能下载
+        $referer = $request->headers->get("referer");
+        if(!empty($referer)){
+            if(preg_match('/course\/[0-9]{1,}\/lesson\/[0-9]{1,}\/player/',$referer)){
+                //通过
+            } else {
+                throw $this->createAccessDeniedException();
+            }
+        }
+
         $response = BinaryFileResponse::create($file['fullpath'], 200, array(), false);
         $response->trustXSendfileTypeHeader();
 
