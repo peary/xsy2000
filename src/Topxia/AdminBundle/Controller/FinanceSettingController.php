@@ -24,9 +24,10 @@ class FinanceSettingController extends BaseController
             'tenpay_key'         => '',
             'tenpay_secret'      => '',
             'wxpay_enabled'      => 0,
+            'wxpay_appid'      => '',
+            'wxpay_account'    => '',
             'wxpay_key'          => '',
             'wxpay_secret'       => '',
-            'wxpay_account'      => '',
             'heepay_enabled'     => 0,
             'heepay_key'         => '',
             'heepay_secret'      => '',
@@ -44,6 +45,16 @@ class FinanceSettingController extends BaseController
         if ($request->getMethod() == 'POST') {
             $payment                    = $request->request->all();
             $payment = ArrayToolkit::trim($payment);
+
+            $formerPayment = $this->getSettingService()->get('payment');
+            if ($payment['enabled'] == 0 && $formerPayment['enabled'] == 1) {
+                $payment['alipay_enabled']   = 0;
+                $payment['wxpay_enabled']    = 0;
+                $payment['heepay_enabled']   = 0;
+                $payment['quickpay_enabled'] = 0;
+                $payment['llpay_enabled']    = 0;
+            }
+
             //新增支付方式，加入下列列表计算，以便判断是否关闭支付功能
             $payment = $this->isClosePayment($payment);
             $this->getSettingService()->set('payment', $payment);

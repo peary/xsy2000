@@ -24,20 +24,27 @@
 
       {{ render(controller(template , {'sn':sn})) }}
 
-      <div class="es-piece" style="margin-bottom:20px;"><div class="piece-header">{{'支付方式'|trans}}</div></div>
-      <form class="form-paytype" method="post" action="{{path('pay_center_pay')}}">
-        <input type="hidden" name="targetType" value="{{order.targetType}}">
-        <input type="hidden" name="orderId" value="{{order.id}}"/>
-        
-        {% set activePayment = order.payment|default(firstEnabledPayment.name|default('')) %}
-        {% if order.payment == 'none' %}
-          {% set activePayment = firstEnabledPayment.name|default('') %}
+        <div class="es-piece" style="margin-bottom:20px;">
+          <div class="piece-header">{{ '支付方式'|trans }}</div>
+        </div>
+        {% if is_micro_messenger() %}
+          {% set form_action = path('pay_center_wxpay') %}
+        {% else %}
+          {% set form_action = path('pay_center_pay') %}
         {% endif %}
+        <form class="form-paytype" method="post" action="{{ form_action }}">
+          <input type="hidden" name="targetType" value="{{ order.targetType }}">
+          <input type="hidden" name="orderId" value="{{ order.id }}"/>
+          {% set activePayment = order.payment|default(firstEnabledPayment.name|default('')) %}
+          {% if order.payment == 'none' %}
+            {% set activePayment = firstEnabledPayment.name|default('') %}
+          {% endif %}
 
-        <input type="hidden" name="payment" value="{{activePayment}}">
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token('site') }}">
-        {% set cbpay = false %}
-        {% set alipay = false %}
+          <input type="hidden" name="payment" value="{{ activePayment }}">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token('site') }}">
+          {% set cbpay = false %}
+          {% set alipay = false %}
+          {% set wxpay = false %}
 
         <div class="form-group order-detail-bg">
           {% for payment in payments %}
@@ -45,11 +52,16 @@
               {% set cbpay = true %}
             {% elseif  payment.name == 'alipay' and payment.enabled == 0 %}
               {% set alipay = true %}
-            {% endif %}
+              {% elseif payment.name == 'wxpay' and payment.enabled == 0 %}
+                {% set wxpay = true %}
+              {% endif %}
               {% if activePayment in ['none', ''] and payment.enabled %}
                 {% set activePayment = payment.name %}
               {% endif %}
-              <div class="check {% if not payment.enabled %}disabled{% endif %} {% if activePayment == payment.name %}active{% endif %}" id="{{payment.name}}">
+
+              <div
+                  class="check {% if not payment.enabled %}disabled{% endif %} {% if activePayment == payment.name %}active{% endif %}"
+                  id="{{ payment.name }}">
                 {% set picture = 'assets/img/order/'~payment.name~'.png' %}
                 <img src="{{ asset(picture) }}" />
                 <span class="icon"></span>
@@ -82,24 +94,28 @@
           {% endif %}
           {% if alipay|default('') or cbpay|default('') %}
               {% if is_micro_messenger() %}
-                <p class="color-danger">您正在使用微信浏览，暂不支持其他支付方式</p>
+                <p class="color-danger">{{'您正在使用微信浏览，暂不支持其他支付方式'|trans}}</p>
               {% else %}
-                <p class="color-danger">若需使用网银支付，请使用IE浏览器</p>
+                <p class="color-danger">{{'若需使用网银支付，请使用IE浏览器'|trans}}</p>
               {% endif %}
-          {% endif %}
-        </div>
-        <div class="form-group">
-          <div class="total-price">
-            {{'应付金额：'|trans}}
-            <span role="pay-rmb" class="pay-rmb">￥{{order.amount}}</span>
+            {% endif %}
+            {% if wxpay | default('') %}
+              <p class="color-danger">{{'您正在使用手机浏览，暂不支持微信支付方式'|trans}}</p>
+            {% endif %}
           </div>
-        </div>
-        <div class="form-group text-right">
-          {% if targetType in ['course', 'classroom', 'vip'] %}
-            {% include 'TopxiaWebBundle:PayCenter:' ~ targetType ~ '-cancelled.html.twig' %}
-          {% endif %}
-          <button class="pay-button btn btn-primary" {% if  activePayment == '' %}disabled="disabled"{% else %}type="submit"{% endif %} >{{'确认支付'|trans}}</button>
-        </div>
+          <div class="form-group">
+            <div class="total-price">
+              {{ '应付金额：'|trans }}
+              <span role="pay-rmb" class="pay-rmb">￥{{ order.amount }}</span>
+            </div>
+          </div>
+          <div class="form-group text-right">
+            {% if targetType in ['course', 'classroom', 'vip'] %}
+              {% include 'TopxiaWebBundle:PayCenter:' ~ targetType ~ '-cancelled.html.twig' %}
+            {% endif %}
+            <button class="pay-button btn btn-primary" {% if  activePayment == '' %}disabled="disabled"
+                    {% else %}type="submit"{% endif %} >{{ '确认支付'|trans }}</button>
+          </div>
 
       </form>
     </div>
