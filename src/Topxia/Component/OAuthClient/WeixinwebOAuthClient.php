@@ -14,8 +14,6 @@ class WeixinwebOAuthClient extends AbstractOAuthClient
         $params['response_type'] = 'code';
         $params['redirect_uri']  = $callbackUrl;
         $params['scope']         = 'snsapi_login';
-		$url = 'https://open.weixin.qq.com/connect/qrconnect?appid='. $params['appid'] .'&redirect_uri='. urlencode($params['redirect_uri']) .'&response_type=code&scope=snsapi_base#wechat_redirect';
-		#return $url;
         return self::AUTHORIZE_URL.http_build_query($params);
     }
 

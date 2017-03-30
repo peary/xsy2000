@@ -1,9 +1,8 @@
 <?php
 namespace Topxia\Component\OAuthClient;
 
-use Topxia\Service\Common\ServiceKernel;
-
 use \InvalidArgumentException;
+use Topxia\Service\Common\ServiceKernel;
 
 class OAuthClientFactory
 {
@@ -16,9 +15,9 @@ class OAuthClientFactory
 	 */
     public static function create($type, array $config)
     {
-    	if (!array_key_exists('key', $config) || !array_key_exists('secret', $config)) {
-    		throw new InvalidArgumentException('参数$config中，必需包含key, secret两个为key的值');
-    	}
+        if (!array_key_exists('key', $config) || !array_key_exists('secret', $config)) {
+            throw new InvalidArgumentException('参数中必需包含key, secret两个为key的值');
+        }
 
         $clients = self::clients();
 
@@ -88,16 +87,21 @@ class OAuthClientFactory
                 'large_icon_img' => '',
                 'key_setting_label' => 'App ID',
                 'secret_setting_label' => 'App Secret',
+                'mp_secret_setting_label' => 'MP文件验证码',
                 'apply_url' => 'https://mp.weixin.qq.com/cgi-bin/readtemplate?t=register/step1_tmpl&lang=zh_CN'
             ),
         );
 
-        $kernel = ServiceKernel::instance();
-        if ($kernel->hasParameter('oauth2_clients')) {
-            $extras = $kernel->getParameter('oauth2_clients');
+        if (self::getServiceKernel()->hasParameter('oauth2_clients')) {
+            $extras  = self::getServiceKernel()->getParameter('oauth2_clients');
             $clients = array_merge($clients, $extras);
         }
 
         return $clients;
+    }
+
+    protected static function getServiceKernel()
+    {
+        return ServiceKernel::instance();
     }
 }

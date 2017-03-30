@@ -126,8 +126,28 @@ class UserSettingController extends BaseController
 
     public function loginConnectAction(Request $request)
     {
+        $clients = OAuthClientFactory::clients();
+        $default = $this->getDefaultLoginConnect($clients);
         $loginConnect = $this->getSettingService()->get('login_bind', array());
+        $loginConnect = array_merge($default, $loginConnect);
 
+        if ($request->getMethod() == 'POST') {
+            $loginConnect = $request->request->all();
+            $loginConnect = ArrayToolkit::trim($loginConnect);
+            $loginConnect = $this->decideEnabledLoginConnect($loginConnect);
+            $this->getSettingService()->set('login_bind', $loginConnect);
+            $this->getLogService()->info('system', 'update_settings', "更新登录设置", $loginConnect);
+            $this->updateWeixinMpFile($loginConnect['weixinmob_mp_secret']);
+        }
+
+        return $this->render('TopxiaAdminBundle:System:login-connect.html.twig', array(
+            'loginConnect' => $loginConnect,
+            'clients'      => $clients
+        ));
+    }
+
+    private function getDefaultLoginConnect($clients)
+    {
         $default = array(
             'login_limit'                     => 0,
             'enabled'                         => 0,
@@ -139,30 +159,49 @@ class UserSettingController extends BaseController
             'temporary_lock_minutes'          => 20
         );
 
-        $clients = OAuthClientFactory::clients();
-
         foreach ($clients as $type => $client) {
             $default["{$type}_enabled"]          = 0;
             $default["{$type}_key"]              = '';
             $default["{$type}_secret"]           = '';
             $default["{$type}_set_fill_account"] = 0;
+            if ($type == 'weixinmob') {
+                $default['weixinmob_mp_secret'] = '';
+            }
         }
 
-        $loginConnect = array_merge($default, $loginConnect);
+        return $default;
+    }
 
-        if ($request->getMethod() == 'POST') {
-            $loginConnect = $request->request->all();
-            $loginConnect = ArrayToolkit::trim($loginConnect);
+    private function decideEnabledLoginConnect($loginConnect)
+    {
+        if ($loginConnect['enabled'] == 0) {
+            $loginConnect['weibo_enabled']   = 0;
+            $loginConnect['qq_enabled']    = 0;
+            $loginConnect['renren_enabled']   = 0;
+            $loginConnect['weixinweb_enabled'] = 0;
+            $loginConnect['weixinmob_enabled']    = 0;
+        }
+        //新增第三方登陆方式，加入下列列表计算，以便判断是否关闭第三方登陆功能
+        $loginConnects = ArrayToolkit::parts($loginConnect, array('weibo_enabled', 'qq_enabled', 'renren_enabled', 'weixinweb_enabled', 'weixinmob_enabled'));
+        $sum      = 0;
+        foreach ($loginConnects as $value) {
+            $sum += $value;
+        }
 
-            $this->getSettingService()->set('login_bind', $loginConnect);
-            $this->getLogService()->info('system', 'update_settings', "更新登录设置", $loginConnect);
+        if ($sum < 1) {
+            if ($loginConnect['enabled'] == 1) {
+                $this->setFlashMessage('danger', '请至少开启一种您需要的第三方登录方式！');
+            }
+            if ($loginConnect['enabled'] == 0) {
+                $this->setFlashMessage('success', '登录设置已保存！');
+            }
+            $loginConnect['enabled'] = 0;
+        } else {
+            $loginConnect['enabled'] = 1;
             $this->setFlashMessage('success', '登录设置已保存！');
         }
 
-        return $this->render('TopxiaAdminBundle:System:login-connect.html.twig', array(
-            'loginConnect' => $loginConnect,
-            'clients'      => $clients
-        ));
+        return $loginConnect;
     }
 
     public function userCenterAction(Request $request)
@@ -403,6 +442,15 @@ class UserSettingController extends BaseController
         }
 
         return $this->redirect($this->generateUrl('admin_setting_user_fields'));
+    }
+
+    protected function updateWeixinMpFile($val)
+    {
+        $dir = realpath(__DIR__.'/../../../../web/');
+        array_map('unlink', glob($dir.'/MP_verify_*.txt'));
+        if (!empty($val)) {
+            file_put_contents($dir.'/MP_verify_'.$val.'.txt', $val);
+        }
     }
 
     protected function getUserDefaultSet()
