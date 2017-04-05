@@ -243,13 +243,13 @@ class PayCenterController extends BaseController
         $params         = $formRequest['params'];
 
         if ($payment == 'wxpay') {
-            $returnXml = $paymentRequest->unifiedOrder();
+            $returnArray = $paymentRequest->unifiedOrder();
 
-            if (!$returnXml) {
-                throw new \RuntimeException('xml数据异常！');
-            }
-
-            $returnArray = $paymentRequest->fromXml($returnXml);
+//            if (!$returnXml) {
+//                throw new \RuntimeException('xml数据异常！');
+//            }
+//
+//            $returnArray = $paymentRequest->fromXml($returnXml);
 
             if ($returnArray['return_code'] == 'SUCCESS') {
                 $url = $returnArray['code_url'];

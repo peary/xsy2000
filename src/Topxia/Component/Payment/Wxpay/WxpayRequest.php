@@ -69,7 +69,7 @@ class WxpayRequest extends Request
                 continue;
             }
 
-            $sign .= $key.'='.$value.'&';
+            $sign .= $key . '=' . $value . '&';
         }
 
         $sign = substr($sign, 0, -1);
