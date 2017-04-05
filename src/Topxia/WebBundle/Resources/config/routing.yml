@@ -1888,7 +1888,6 @@ pay_center_pay:
 pay_center_wxpay:
     path:   /pay/center/wxpay
     defaults: { _controller: TopxiaWebBundle:PayCenter:wxpay }
-    methods: [POST]
 
 pay_center_auth_unbind:
     path:   /pay/center/auth_unbind
